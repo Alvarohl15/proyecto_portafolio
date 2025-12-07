@@ -33,55 +33,45 @@ with st.sidebar:
     st.header("Definición de Pesos de los Activos")
     st.subheader("ETFs Regionales")
 
-    '''
-    SPLG: ETF que sigue el índice S&P 500.
-    '''
-    W_SPLG = st.number_input(
-        "Peso asignado a ETF SPLG:",
-        min_value=0.0,
-        max_value=100.0,
-        value=0.0,
-        step=0.1,
-    )
+    left, right = st.columns(2, vertical_alignment="bottom")
+    with left:
+        
+        st.write(SPLG: ETF que sigue el índice S&P 500.)
+        st.write(EWC: ETF que sigue el índice de acciones canadienses.)
+        st.write(IEUR: ETF que sigue el índice de acciones europeas.)    
+        st.write(EEM: ETF que sigue el índice de acciones de mercados emergentes.)
+        st.write(EWJ: ETF que sigue el índice de acciones japonesas.)
+    
+    with right:
+        W_SPLG = st.number_input(
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+        )
 
-    '''
-    EWC: ETF que sigue el índice de acciones canadienses.
-    '''
-    W_EWC = st.number_input(
-        "Peso asignado a ETF EWC:",
-        min_value=0.0,
-        max_value=100.0,
-        value=0.0,
-        step=0.1,
-    )
+        W_EWC = st.number_input(
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+        )
 
-    '''
-    IEUR: ETF que sigue el índice de acciones europeas.
-    '''
     W_IEUR = st.number_input(
-        "Peso asignado a ETF IEUR:",
         min_value=0.0,
         max_value=100.0,
         value=0.0,
         step=0.1,
     )
 
-    '''
-    EEM: ETF que sigue el índice de acciones de mercados emergentes.
-    '''
     W_EEM = st.number_input(
-        "Peso asignado a ETF EEM:",
         min_value=0.0,
         max_value=100.0,
         value=0.0,
         step=0.1,
     )
 
-    '''
-    EWJ: ETF que sigue el índice de acciones japonesas.
-    '''
     W_EWJ = st.number_input(
-        "Peso asignado a ETF EWJ:",
         min_value=0.0,
         max_value=100.0,
         value=0.0,
