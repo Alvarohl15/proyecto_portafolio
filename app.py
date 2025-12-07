@@ -108,11 +108,11 @@ with st.sidebar:
             )
     else:
         #########etiquetas para peso de portafolio optimizado y black-litterman######
-        st.text_input(W_SPLG)
-        st.text_input(W_EWC)        
-        st.text_input(W_IEUR)
-        st.text_input(W_EEM)
-        st.text_input(W_EWJ)
+        st.text_input("Peso Asignado",W_SPLG)
+        st.text_input("Peso Asignado",W_EWC)        
+        st.text_input("Peso Asignado",W_IEUR)
+        st.text_input("Peso Asignado",W_EEM)
+        st.text_input("Peso Asignado",W_EWJ)
 
     st.subheader("ETFs Sectoriales")
 
