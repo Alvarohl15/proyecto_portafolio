@@ -36,11 +36,11 @@ with st.sidebar:
     left, right = st.columns(2, vertical_alignment="bottom")
     with left:
         
-        st.write(SPLG: ETF que sigue el índice S&P 500.)
-        st.write(EWC: ETF que sigue el índice de acciones canadienses.)
-        st.write(IEUR: ETF que sigue el índice de acciones europeas.)    
-        st.write(EEM: ETF que sigue el índice de acciones de mercados emergentes.)
-        st.write(EWJ: ETF que sigue el índice de acciones japonesas.)
+        st.write("SPLG: ETF que sigue el índice S&P 500.")
+        st.write("EWC: ETF que sigue el índice de acciones canadienses.")
+        st.write("IEUR: ETF que sigue el índice de acciones europeas.")    
+        st.write("EEM: ETF que sigue el índice de acciones de mercados emergentes.")
+        st.write("EWJ: ETF que sigue el índice de acciones japonesas.")
     
     with right:
         W_SPLG = st.number_input(
