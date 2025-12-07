@@ -42,40 +42,45 @@ with st.sidebar:
         st.write("EWJ: ETF que sigue el índice de acciones japonesas.")
     
     with right:
-        W_SPLG = st.number_input(
+        st.number_input(
             "Peso asignado",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
+            key="W_SPLG",
         )
-        W_EWC = st.number_input(
+        st.number_input(
             "Peso asignado",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
+            key="W_EWC",
         )
-        W_IEUR = st.number_input(
+        st.number_input(
             "Peso asignado",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
+            key="W_IEUR",
         )
-        W_EEM = st.number_input(
+        st.number_input(
             "Peso asignado",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
+            key="W_EEM",
         )
-        W_EWJ = st.number_input(
+        st.number_input(
             "Peso asignado",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
+            key="W_EWJ",
         )
     
     st.subheader("ETFs Sectoriales")
