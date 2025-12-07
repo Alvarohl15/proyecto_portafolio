@@ -49,7 +49,6 @@ with st.sidebar:
             value=0.0,
             step=0.1,
         )
-
         W_EWC = st.number_input(
             "Peso asignado",
             min_value=0.0,
@@ -57,7 +56,6 @@ with st.sidebar:
             value=0.0,
             step=0.1,
         )
-
         W_IEUR = st.number_input(
             "Peso asignado",
             min_value=0.0,
@@ -65,7 +63,6 @@ with st.sidebar:
             value=0.0,
             step=0.1,
         )
-
         W_EEM = st.number_input(
             "Peso asignado",
             min_value=0.0,
@@ -73,7 +70,6 @@ with st.sidebar:
             value=0.0,
             step=0.1,
         )
-
         W_EWJ = st.number_input(
             "Peso asignado",
             min_value=0.0,
