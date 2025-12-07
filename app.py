@@ -93,57 +93,13 @@ with st.sidebar:
         st.write("EEM")
         st.write("EWJ")
     
-    if arbitrario:
-        #######Input de pesos para portafolio arbitrario########
-        with right:
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_SPLG",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_EWC",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_IEUR",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_EEM",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_EWJ",
-            )
-    else:
-        #########etiquetas para peso de portafolio optimizado y black-litterman######
-        with right:
-            st.write(W_SPLG)
-            st.write(W_EWC)        
-            st.write(W_IEUR)
-            st.write(W_EEM)
-            st.write(W_EWJ)
+    #########etiquetas para peso de portafolio optimizado y black-litterman######
+    with right:
+        st.write(W_SPLG)
+        st.write(W_EWC)        
+        st.write(W_IEUR)
+        st.write(W_EEM)
+        st.write(W_EWJ)
 
     st.subheader("ETFs Sectoriales")
 
@@ -270,12 +226,55 @@ with st.sidebar:
 
 ########################## Análisis de Portafolio Arbitrario ##########################
 if tipo_portafolio == "Arbitrario":
-    arbitrario=True
     st.subheader("Análisis de Portafolio Arbitrario")
     '''
     Por favor, defina el peso de cada uno de los activos que componen el portafolio.
     '''
+    #######Input de pesos para portafolio arbitrario########
+    regionales=st.columns(1)
+    with regionales[0]:
+        st.number_input(
+            "Peso asignado",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_SPLG",
+        )
+        st.number_input(
+            "Peso asignado",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_EWC",
+        )
+        st.number_input(
+            "Peso asignado",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_IEUR",
+        )
+        st.number_input(
+            "Peso asignado",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_EEM",
+        )
+        st.number_input(
+            "Peso asignado",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_EWJ",
+        )
 
+        
     weight_matrix_regionales = pd.DataFrame(
     {
         "ETF Regionales": ["SPLG", "EWC", "IEUR", "EEM", "EWJ"],
