@@ -33,9 +33,8 @@ with st.sidebar:
     st.header("Definición de Pesos de los Activos")
     st.subheader("ETFs Regionales")
 
-    left, right = st.columns(2, vertical_alignment="bottom")
+    left, right = st.columns([2,1])
     with left:
-        
         st.write("SPLG: ETF que sigue el índice S&P 500.")
         st.write("EWC: ETF que sigue el índice de acciones canadienses.")
         st.write("IEUR: ETF que sigue el índice de acciones europeas.")    
@@ -44,6 +43,7 @@ with st.sidebar:
     
     with right:
         W_SPLG = st.number_input(
+            "Peso asignado",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
@@ -51,32 +51,36 @@ with st.sidebar:
         )
 
         W_EWC = st.number_input(
+            "Peso asignado",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
         )
 
-    W_IEUR = st.number_input(
-        min_value=0.0,
-        max_value=100.0,
-        value=0.0,
-        step=0.1,
-    )
+        W_IEUR = st.number_input(
+            "Peso asignado",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+        )
 
-    W_EEM = st.number_input(
-        min_value=0.0,
-        max_value=100.0,
-        value=0.0,
-        step=0.1,
-    )
+        W_EEM = st.number_input(
+            "Peso asignado",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+        )
 
-    W_EWJ = st.number_input(
-        min_value=0.0,
-        max_value=100.0,
-        value=0.0,
-        step=0.1,
-    )
+        W_EWJ = st.number_input(
+            "Peso asignado",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+        )
     
     st.subheader("ETFs Sectoriales")
 
