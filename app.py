@@ -42,6 +42,36 @@ La plataforma ofrece gráficos interactivos, parámetros ajustables y guías cla
  para que puedas evaluar tus decisiones de inversión de forma sencilla y eficiente.
  '''
 
+st.subheader("ETFs Regionales Disponibles")
+st.table({
+    "ETFs Regionales": ["SPLG", "EWC", "IEUR", "EEM", "EWJ"],
+    "Descripción": [
+        "ETF que sigue el índice S&P 500.",
+        "ETF que sigue el índice de acciones canadienses.",
+        "ETF que sigue el índice de acciones europeas.",
+        "ETF que sigue el índice de acciones de mercados emergentes.",
+        "ETF que sigue el índice de acciones japonesas."
+    ]
+})
+
+st.subheader("ETFs Sectoriales Disponibles")
+st.table({
+    "ETFs Sectoriales": ["XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLB", "XLRE", "XLK", "XLU"],
+    "Descripción": [
+        "ETF que sigue el índice de comunicaciones.",
+        "ETF que sigue el índice de consumo discrecional.",
+        "ETF que sigue el índice de consumo básico.",
+        "ETF que sigue el índice de energía.",
+        "ETF que sigue el índice financiero.",
+        "ETF que sigue el índice de salud.",
+        "ETF que sigue el índice industrial.",
+        "ETF que sigue el índice de materiales.",
+        "ETF que sigue el índice inmobiliario.",
+        "ETF que sigue el índice tecnológico.",
+        "ETF que sigue el índice de servicios públicos."
+    ]
+})
+
 # Elección del analisis del portafolio
 tipo_portafolio = st.selectbox(
     "Por favor, seleccione el tipo de Análisis del Portafolio que desea usar:",
@@ -57,11 +87,11 @@ with st.sidebar:
 
     left, right = st.columns([2,1],vertical_alignment='center')
     with left:
-        st.write("SPLG: ETF que sigue el índice S&P 500.")
-        st.write("EWC: ETF que sigue el índice de acciones canadienses.")
-        st.write("IEUR: ETF que sigue el índice de acciones europeas.")    
-        st.write("EEM: ETF que sigue el índice de acciones de mercados emergentes.")
-        st.write("EWJ: ETF que sigue el índice de acciones japonesas.")
+        st.write("SPLG")
+        st.write("EWC")
+        st.write("IEUR")    
+        st.write("EEM")
+        st.write("EWJ")
     
     if arbitrario:
         #######Input de pesos para portafolio arbitrario########
@@ -117,22 +147,23 @@ with st.sidebar:
 
     st.subheader("ETFs Sectoriales")
 
-    with left:
-        st.write("XLC: ETF que sigue el índice de comunicaciones.")
-        st.write("XLY: ETF que sigue el índice de consumo discrecional.")
-        st.write("XLP: ETF que sigue el índice de consumo básico.")    
-        st.write("XLE: ETF que sigue el índice de energía.")
-        st.write("XLF: ETF que sigue el índice financiero.")
-        st.write("XLV: ETF que sigue el índice de salud.")
-        st.write("XLI: ETF que sigue el índice industrial.")
-        st.write("XLB: ETF que sigue el índice de materiales.")
-        st.write("XLRE: ETF que sigue el índice inmobiliario.")
-        st.write("XLK: ETF que sigue el índice tecnológico.")
-        st.write("XLU: ETF que sigue el índice de servicios públicos.")
+    left_S, right_S = st.columns([2,1],vertical_alignment='center')
+    with left_S:
+        st.write("XLC")
+        st.write("XLY")
+        st.write("XLP")    
+        st.write("XLE")
+        st.write("XLF")
+        st.write("XLV")
+        st.write("XLI")
+        st.write("XLB")
+        st.write("XLRE")
+        st.write("XLK")
+        st.write("XLU")
     
     if arbitrario:
         #######Input de pesos para portafolio arbitrario########
-        with right:
+        with right_s:
             st.number_input(
                 "Peso asignado",
                 min_value=0.0,
@@ -223,7 +254,7 @@ with st.sidebar:
             )
     else:
         #########etiquetas para peso de portafolio optimizado y black-litterman######
-        with right:
+        with right_S:
             st.write(W_XLC)
             st.write(W_XLY)        
             st.write(W_XLP)
