@@ -130,102 +130,116 @@ with st.sidebar:
         st.write("XLK: ETF que sigue el índice tecnológico.")
         st.write("XLU: ETF que sigue el índice de servicios públicos.")
     
-    
-    with right:
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLC",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLY",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLP",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLE",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLF",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLV",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLI",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLB",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLRE",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLK",
-        )
-        st.number_input(
-            "Peso asignado",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLU",
-        )
-
+    if arbitrario:
+        #######Input de pesos para portafolio arbitrario########
+        with right:
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLC",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLY",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLP",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLE",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLF",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLV",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLI",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLB",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLRE",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLK",
+            )
+            st.number_input(
+                "Peso asignado",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=0.1,
+                key="W_XLU",
+            )
+    else:
+        #########etiquetas para peso de portafolio optimizado y black-litterman######
+        with right:
+            st.write(W_XLC)
+            st.write(W_XLY)        
+            st.write(W_XLP)
+            st.write(W_XLE)
+            st.write(W_XLF)
+            st.write(W_XLV)
+            st.write(W_XLI)
+            st.write(W_XLB)
+            st.write(W_XLRE)
+            st.write(W_XLK)
+            st.write(W_XLU)
 
 
 ########################## Análisis de Portafolio Arbitrario ##########################
 if tipo_portafolio == "Arbitrario":
-    Arbitrario=True
+    arbitrario=True
     st.subheader("Análisis de Portafolio Arbitrario")
     '''
     Por favor, defina el peso de cada uno de los activos que componen el portafolio.
