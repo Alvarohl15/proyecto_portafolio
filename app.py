@@ -226,11 +226,12 @@ with st.sidebar:
 
 ########################## Análisis de Portafolio Arbitrario ##########################
 if tipo_portafolio == "Arbitrario":
+
+    #######Input de pesos para portafolio arbitrario########
     st.subheader("Análisis de Portafolio Arbitrario")
     '''
-    Por favor, defina el peso de cada uno de los activos que componen el portafolio.
+    Por favor, defina el peso de cada uno de los ETF´s Regionales que componen el portafolio.
     '''
-    #######Input de pesos para portafolio arbitrario########
     regionales=st.columns(5)
     with regionales[0]:
         st.number_input(
@@ -277,24 +278,111 @@ if tipo_portafolio == "Arbitrario":
             step=0.1,
             key="W_EWJ",
         )
-
-
-    weight_matrix_regionales = pd.DataFrame(
-    {
-        "ETF Regionales": ["SPLG", "EWC", "IEUR", "EEM", "EWJ"],
-        "Weight": [0, 78, 4, 0, 0]
-    },
-    index=["ETF Regionales", "Weight"],
-    )
-
-    weight_matrix_sectores = pd.DataFrame(
-    {
-        "ETF Sectoriales": ["XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLB", "XLRE", "XLK", "XLU"],
-        "Weight": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    },
-    index=["ETF Sectoriales", "Weight"],
-    )
-
-    st.table(weight_matrix_regionales)
-else:
-    Arbitrario=False
+    '''
+    Por favor, defina el peso de cada uno de los ETF´s Sectoriales que componen el portafolio.
+    '''
+    sectoriales_1=st.columns(5)
+    with sectoriales_1[0]:
+        st.number_input(
+            "XLC",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLC",
+        )
+    with sectoriales_1[1]:
+        st.number_input(
+            "XLY",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLY",
+        )
+    with sectoriales_1[2]:
+        st.number_input(
+            "XLP",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLP",
+        )
+    with sectoriales_1[3]:
+        st.number_input(
+            "XLE",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLE",
+        )
+    with sectoriales_1[4]:
+        st.number_input(
+            "XLF",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLF",
+        )
+    
+    sectoriales_2=st.columns(5)
+    with sectoriales_2[0]:
+        st.number_input(
+            "XLV",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLV",
+        )
+    with sectoriales_2[1]:
+        st.number_input(
+            "XLI",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLI",
+        )
+    with sectoriales_2[2]:
+        st.number_input(
+            "XLB",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLB",
+        )
+    with sectoriales_2[3]:
+        st.number_input(
+            "XLRE",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLRE",
+        )
+    with sectoriales_2[4]:
+        st.number_input(
+            "XLK",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLK",
+        )
+    regionales_3=st.columns(5)
+    with regionales_3[0]:
+        st.number_input(
+            "XLU",
+            min_value=0.0,
+            max_value=100.0,
+            value=0.0,
+            step=0.1,
+            key="W_XLU",
+        )
+    
+    st.button("Calcular Analisis del Portafolio Arbitrario")
