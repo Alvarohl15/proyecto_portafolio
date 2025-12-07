@@ -385,4 +385,25 @@ if tipo_portafolio == "Arbitrario":
             key="W_XLU",
         )
     
-    st.button("Calcular Analisis del Portafolio Arbitrario")
+    st.button("Calcular Analisis del Portafolio Arbitrario",horizontal_alignment='right')
+
+
+
+########################## Análisis de Portafolio Optiizado ##########################
+if tipo_portafolio == "Optimizado":
+    st.subheader("Análisis de Portafolio Optimizado")
+    '''
+    Seleccione el método deseado y ajuste los parámetros según sus preferencias para obtener recomendaciones personalizadas.
+    '''
+    meotodo_optimizado = st.selectbox(
+        "Por favor, seleccione el método de optimización:",
+        ("Mínima Varianza", "Máximo Sharpe", "Markowitz"),
+        index=None,
+        placeholder="Seleccione metodo de optimización...",
+    )
+
+    st.button("Calcular Análisis del Portafolio Optimizado",horizontal_alignment='right')
+
+if tipo_portafolio == "Black-Litterman":
+    st.subheader("Proceso en desarrollo, próximamente disponible.")
+    
