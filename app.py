@@ -231,42 +231,46 @@ if tipo_portafolio == "Arbitrario":
     Por favor, defina el peso de cada uno de los activos que componen el portafolio.
     '''
     #######Input de pesos para portafolio arbitrario########
-    regionales=st.columns(1)
+    regionales=st.columns(5)
     with regionales[0]:
         st.number_input(
-            "Peso asignado",
+            "SPLG",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
             key="W_SPLG",
         )
+    with regionales[1]:
         st.number_input(
-            "Peso asignado",
+            "EWC",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
             key="W_EWC",
         )
+    with regionales[2]:
         st.number_input(
-            "Peso asignado",
+            "IEUR",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
             key="W_IEUR",
         )
+    with regionales[3]:
         st.number_input(
-            "Peso asignado",
+            "EEM",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
             step=0.1,
             key="W_EEM",
         )
+    with regionales[4]:
         st.number_input(
-            "Peso asignado",
+            "EWJ",
             min_value=0.0,
             max_value=100.0,
             value=0.0,
@@ -274,7 +278,7 @@ if tipo_portafolio == "Arbitrario":
             key="W_EWJ",
         )
 
-        
+
     weight_matrix_regionales = pd.DataFrame(
     {
         "ETF Regionales": ["SPLG", "EWC", "IEUR", "EEM", "EWJ"],
