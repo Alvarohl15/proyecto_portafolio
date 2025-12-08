@@ -385,8 +385,10 @@ if tipo_portafolio == "Arbitrario":
             key="W_XLU",
         )
     
-    st.button("Calcular Analisis del Portafolio Arbitrario",horizontal_alignment='right')
+    boton=st.cols(4)
+    boton[3].st.button("Calcular Analisis del Portafolio Arbitrario",horizontal_alignment='right')
 
+    
 
 
 ########################## Análisis de Portafolio Optiizado ##########################
@@ -402,7 +404,8 @@ if tipo_portafolio == "Optimizado":
         placeholder="Seleccione metodo de optimización...",
     )
 
-    st.button("Calcular Análisis del Portafolio Optimizado",horizontal_alignment='right')
+    boton=st.cols(4)
+    boton[3].st.button("Calcular Análisis del Portafolio Optimizado")
 
 if tipo_portafolio == "Black-Litterman":
     st.subheader("Proceso en desarrollo, próximamente disponible.")
