@@ -113,6 +113,8 @@ tipo_portafolio = st.selectbox(
     index=None,
     placeholder="Seleccione metodo de análisis...",
 )
+# actualizar el flag según la selección
+arbitrario = (tipo_portafolio == "Arbitrario")
 
 #Barra lateral para mostrar y definir los pesos de los ETFs
 with st.sidebar:
