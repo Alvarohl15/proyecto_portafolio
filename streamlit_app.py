@@ -3,7 +3,7 @@ import pandas as pd
 import math
 from pathlib import Path
 import numpy as np
-from sf_library import TICKERS_REGIONES, TICKERS_SECTORES, obtener_momentos_desde_csv, compute_portafolio_metrics
+from sf_library import TICKERS_REGIONES, TICKERS_SECTORES, obtener_momentos_desde_csv, compute_portfolio_metrics
 from optimization import (
     optimize_min_variance,
     optimize_max_sharpe,
