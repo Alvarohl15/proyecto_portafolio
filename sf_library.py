@@ -5,11 +5,7 @@ from datetime import datetime
 import numpy as np
 
 TICKERS_REGIONES = ["SPLG", "EWC", "IEUR", "EEM", "EWJ"]
-
-TICKERS_SECTORES = [
-    "XLC", "XLY", "XLP", "XLE", "XLF",
-    "XLV", "XLI", "XLB", "XLRE", "XLK", "XLU"
-]
+TICKERS_SECTORES = ["XLC", "XLY", "XLP", "XLE", "XLF","XLV", "XLI", "XLB", "XLRE", "XLK", "XLU"]
 
 def descargar_tickers(tickers, carpeta='MarketData', start='2000-01-01', end=None):
     """
