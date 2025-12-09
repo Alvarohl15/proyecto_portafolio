@@ -2,6 +2,14 @@ import yfinance as yf
 import pandas as pd
 import os
 from datetime import datetime
+import numpy as np
+
+TICKERS_REGIONES = ["SPLG", "EWC", "IEUR", "EEM", "EWJ"]
+
+TICKERS_SECTORES = [
+    "XLC", "XLY", "XLP", "XLE", "XLF",
+    "XLV", "XLI", "XLB", "XLRE", "XLK", "XLU"
+]
 
 def descargar_tickers(tickers, carpeta='MarketData', start='2000-01-01', end=None):
     """
@@ -144,3 +152,23 @@ def sync_timeseries(tickers, data_dir="MarketData"):
     print(mtx_correl, "\n")
 
     return df, mtx_var_covar, mtx_correl
+    
+def obtener_momentos_desde_csv(tickers, data_dir="MarketData"):
+    """
+    Usa sync_timeseries para:
+      - sincronizar los retornos de los tickers
+      - calcular el vector de medias (mu)
+      - calcular la matriz de varianza-covarianza (Sigma)
+
+    Regresa:
+      - df: DataFrame con fecha y retornos
+      - mu: Series con el rendimiento promedio de cada ticker
+      - Sigma: DataFrame con la matriz de varianza-covarianza
+    """
+    df, _, _ = sync_timeseries(tickers, data_dir=data_dir)
+
+    returns_only = df.drop(columns="date")
+    mu = returns_only.mean()
+    Sigma = returns_only.cov()
+
+    return df, mu, Sigma
