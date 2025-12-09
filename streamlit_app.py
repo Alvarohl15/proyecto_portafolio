@@ -1,55 +1,38 @@
 import streamlit as st
 import pandas as pd
-import math
-from pathlib import Path
 import numpy as np
-from sf_library import TICKERS_REGIONES, TICKERS_SECTORES, obtener_momentos_desde_csv, compute_portfolio_metrics
+
+from sf_library import (
+    TICKERS_REGIONES,
+    TICKERS_SECTORES,
+    obtener_momentos_desde_csv,
+    compute_portfolio_metrics,
+)
+
 from optimization import (
     optimize_min_variance,
     optimize_max_sharpe,
     optimize_markowitz_target,
-    port_return,
-    port_vol,
 )
 
-#booleano para definir si es portafolio arbitrario
-arbitrario=False
+# ===================== CONFIGURACIÓN DE LA APP =====================
 
-#Etiquetas para pesos de los ETFs
-W_EEM=0.0
-W_EWC=0.0
-W_IEUR=0.0
-W_SPLG=0.0
-W_EWJ=0.0
-W_XLC=0.0
-W_XLY=0.0
-W_XLP=0.0
-W_XLE=0.0
-W_XLF=0.0
-W_XLV=0.0
-W_XLI=0.0
-W_XLB=0.0
-W_XLRE=0.0
-W_XLK=0.0
-W_XLU=0.0
-
-
-# Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
     page_title='SF-Portafolio de Inversión',
     page_icon=':earth_americas:',
 )
 
-# Introcucción a la página
-st.header('Análisis Cauntitativo - Portafolio de Inversión')
+st.header('Análisis Cuantitativo - Portafolio de Inversión')
 '''
 Bienvenido a esta aplicación de análisis y optimización de portafolios. Aquí podrás explorar estrategias
-de inversión por regiones y sectores, consultar métricas clave como rendimiento, riesgo; 
-y comparar distintos tipos de portafolios: arbitrarios, optimizados (M ́ınima Varianza, Ma ́ximo Sharpe y Markowitz) y basados en Black-Litterman.
+de inversión por regiones y sectores, consultar métricas clave como rendimiento y riesgo, 
+y comparar distintos tipos de portafolios: arbitrarios y optimizados (Mínima Varianza, Máximo Sharpe y Markowitz).
 
-La plataforma ofrece gráficos interactivos, parámetros ajustables y guías claras en cada sección,
- para que puedas evaluar tus decisiones de inversión de forma sencilla y eficiente.
- '''
+La plataforma ofrece tablas con parámetros ajustables y guías claras en cada sección,
+para que puedas evaluar tus decisiones de inversión de forma sencilla y eficiente.
+'''
+
+# ===================== TABLAS DE ETFs =====================
 
 st.subheader("ETFs Regionales Disponibles")
 st.table({
@@ -80,7 +63,9 @@ st.table({
         "ETF que sigue el índice de servicios públicos."
     ]
 })
-# elección de universo y cálculo de μ y Σ
+
+# ===================== UNIVERSO =====================
+
 st.subheader("Universo de inversión a analizar")
 
 universo = st.selectbox(
@@ -107,44 +92,40 @@ with col_mu:
 with col_sigma:
     st.markdown("**Matriz de varianza–covarianza Σ:**")
     st.dataframe(Sigma_universo)
-# Elección del analisis del portafolio
+
+# ===================== TIPO DE ANÁLISIS =====================
+
 tipo_portafolio = st.selectbox(
     "Por favor, seleccione el tipo de Análisis del Portafolio que desea usar:",
-    ("Arbitrario", "Optimizado", "Black-Litterman"),
+    ("Arbitrario", "Optimizado"),
     index=None,
-    placeholder="Seleccione metodo de análisis...",
+    placeholder="Seleccione método de análisis...",
 )
-# actualizar el flag según la selección
-arbitrario = (tipo_portafolio == "Arbitrario")
 
-#Barra lateral para mostrar y definir los pesos de los ETFs
+# ===================== SIDEBAR (INFO) =====================
+
 with st.sidebar:
     st.header("Definición de Pesos de los Activos")
     st.subheader("ETFs Regionales")
 
-    left, right = st.columns([2,1],vertical_alignment='center')
+    left, right = st.columns([2, 1], vertical_alignment='center')
     with left:
         st.write("SPLG")
         st.write("EWC")
-        st.write("IEUR")    
+        st.write("IEUR")
         st.write("EEM")
         st.write("EWJ")
-    
-    #########etiquetas para peso de portafolio optimizado y black-litterman######
+
     with right:
-        st.write(W_SPLG)
-        st.write(W_EWC)        
-        st.write(W_IEUR)
-        st.write(W_EEM)
-        st.write(W_EWJ)
+        st.write("Pesos definidos en la sección de análisis.")
 
     st.subheader("ETFs Sectoriales")
 
-    left_S, right_S = st.columns([2,1],vertical_alignment='center')
+    left_S, right_S = st.columns([2, 1], vertical_alignment='center')
     with left_S:
         st.write("XLC")
         st.write("XLY")
-        st.write("XLP")    
+        st.write("XLP")
         st.write("XLE")
         st.write("XLF")
         st.write("XLV")
@@ -153,286 +134,69 @@ with st.sidebar:
         st.write("XLRE")
         st.write("XLK")
         st.write("XLU")
-    
-    if arbitrario:
-        #######Input de pesos para portafolio arbitrario########
-        with right_S:
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLC",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLY",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLP",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLE",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLF",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLV",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLI",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLB",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLRE",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLK",
-            )
-            st.number_input(
-                "Peso asignado",
-                min_value=0.0,
-                max_value=100.0,
-                value=0.0,
-                step=0.1,
-                key="W_XLU",
-            )
-    else:
-        #########etiquetas para peso de portafolio optimizado y black-litterman######
-        with right_S:
-            st.write(W_XLC)
-            st.write(W_XLY)        
-            st.write(W_XLP)
-            st.write(W_XLE)
-            st.write(W_XLF)
-            st.write(W_XLV)
-            st.write(W_XLI)
-            st.write(W_XLB)
-            st.write(W_XLRE)
-            st.write(W_XLK)
-            st.write(W_XLU)
 
+    with right_S:
+        st.write("Pesos definidos en la sección de análisis.")
 
-########################## Análisis de Portafolio Arbitrario ##########################
+# ===================== PORTAFOLIO ARBITRARIO =====================
+
 if tipo_portafolio == "Arbitrario":
 
-    #######Input de pesos para portafolio arbitrario########
     st.subheader("Análisis de Portafolio Arbitrario")
-    '''
-    Por favor, defina el peso de cada uno de los ETF´s Regionales que componen el portafolio.
-    '''
-    regionales=st.columns(5)
+    st.markdown("Define el peso (en %) de cada ETF del portafolio.")
+
+    # Pesos regionales
+    regionales = st.columns(5)
     with regionales[0]:
-        st.number_input(
-            "SPLG",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_SPLG",
-        )
+        st.number_input("SPLG", 0.0, 100.0, 0.0, 0.1, key="W_SPLG")
     with regionales[1]:
-        st.number_input(
-            "EWC",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_EWC",
-        )
+        st.number_input("EWC", 0.0, 100.0, 0.0, 0.1, key="W_EWC")
     with regionales[2]:
-        st.number_input(
-            "IEUR",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_IEUR",
-        )
+        st.number_input("IEUR", 0.0, 100.0, 0.0, 0.1, key="W_IEUR")
     with regionales[3]:
-        st.number_input(
-            "EEM",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_EEM",
-        )
+        st.number_input("EEM", 0.0, 100.0, 0.0, 0.1, key="W_EEM")
     with regionales[4]:
-        st.number_input(
-            "EWJ",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_EWJ",
-        )
-    '''
-    Por favor, defina el peso de cada uno de los ETF´s Sectoriales que componen el portafolio.
-    '''
-    sectoriales_1=st.columns(5)
+        st.number_input("EWJ", 0.0, 100.0, 0.0, 0.1, key="W_EWJ")
+
+    # Pesos sectoriales
+    sectoriales_1 = st.columns(5)
     with sectoriales_1[0]:
-        st.number_input(
-            "XLC",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLC",
-        )
+        st.number_input("XLC", 0.0, 100.0, 0.0, 0.1, key="W_XLC")
     with sectoriales_1[1]:
-        st.number_input(
-            "XLY",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLY",
-        )
+        st.number_input("XLY", 0.0, 100.0, 0.0, 0.1, key="W_XLY")
     with sectoriales_1[2]:
-        st.number_input(
-            "XLP",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLP",
-        )
+        st.number_input("XLP", 0.0, 100.0, 0.0, 0.1, key="W_XLP")
     with sectoriales_1[3]:
-        st.number_input(
-            "XLE",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLE",
-        )
+        st.number_input("XLE", 0.0, 100.0, 0.0, 0.1, key="W_XLE")
     with sectoriales_1[4]:
-        st.number_input(
-            "XLF",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLF",
-        )
-    
-    sectoriales_2=st.columns(5)
+        st.number_input("XLF", 0.0, 100.0, 0.0, 0.1, key="W_XLF")
+
+    sectoriales_2 = st.columns(5)
     with sectoriales_2[0]:
-        st.number_input(
-            "XLV",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLV",
-        )
+        st.number_input("XLV", 0.0, 100.0, 0.0, 0.1, key="W_XLV")
     with sectoriales_2[1]:
-        st.number_input(
-            "XLI",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLI",
-        )
+        st.number_input("XLI", 0.0, 100.0, 0.0, 0.1, key="W_XLI")
     with sectoriales_2[2]:
-        st.number_input(
-            "XLB",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLB",
-        )
+        st.number_input("XLB", 0.0, 100.0, 0.0, 0.1, key="W_XLB")
     with sectoriales_2[3]:
-        st.number_input(
-            "XLRE",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLRE",
-        )
+        st.number_input("XLRE", 0.0, 100.0, 0.0, 0.1, key="W_XLRE")
     with sectoriales_2[4]:
-        st.number_input(
-            "XLK",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLK",
-        )
-    regionales_3=st.columns(5)
+        st.number_input("XLK", 0.0, 100.0, 0.0, 0.1, key="W_XLK")
+
+    regionales_3 = st.columns(5)
     with regionales_3[0]:
-        st.number_input(
-            "XLU",
-            min_value=0.0,
-            max_value=100.0,
-            value=0.0,
-            step=0.1,
-            key="W_XLU",
-        )
-        rf_arbitrario = st.number_input(
+        st.number_input("XLU", 0.0, 100.0, 0.0, 0.1, key="W_XLU")
+
+    rf_arbitrario = st.number_input(
         "Tasa libre de riesgo (rf, por periodo) para el análisis del portafolio arbitrario",
         value=0.0,
         step=0.001,
         format="%.4f",
     )
 
-    if st.button("Calcular Analisis del Portafolio Arbitrario", horizontal_alignment='right'):
-        # Orden de los tickers (regiones + sectores)
+    if st.button("Calcular Análisis del Portafolio Arbitrario"):
         tickers_all = TICKERS_REGIONES + TICKERS_SECTORES
 
-        # Leemos los pesos desde st.session_state (en %)
         pesos_pct = [
             st.session_state["W_SPLG"],
             st.session_state["W_EWC"],
@@ -452,12 +216,11 @@ if tipo_portafolio == "Arbitrario":
             st.session_state["W_XLU"],
         ]
 
-        w = np.array(pesos_pct) / 100.0
+        w = np.array(pesos_pct, dtype=float) / 100.0
 
         if not np.isclose(w.sum(), 1.0):
             st.warning(f"Los pesos suman {w.sum():.2f}. Se recomienda que la suma sea 1 (100%).")
 
-        # Rendimientos históricos de todos los tickers
         df_all, _, _ = obtener_momentos_desde_csv(tickers_all)
         returns_all = df_all.drop(columns="date")
 
@@ -465,12 +228,9 @@ if tipo_portafolio == "Arbitrario":
 
         st.subheader("Métricas del portafolio arbitrario")
         st.table(pd.Series(metrics, name="Valor"))
-    st.button("Calcular Analisis del Portafolio Arbitrario",horizontal_alignment='right')
 
+# ===================== PORTAFOLIO OPTIMIZADO =====================
 
-
-
-########################## Análisis de Portafolio Optiizado ##########################
 if tipo_portafolio == "Optimizado":
     st.subheader("Análisis de Portafolio Optimizado")
     '''
@@ -509,7 +269,6 @@ if tipo_portafolio == "Optimizado":
         else:
             w_opt, res = optimize_markowitz_target(mu_vals, Sigma_vals, r_target, short=False)
 
-        
         metrics_opt = compute_portfolio_metrics(returns_universo, w_opt, rf=rf)
 
         st.markdown("### Pesos óptimos del portafolio")
@@ -519,12 +278,3 @@ if tipo_portafolio == "Optimizado":
 
         st.markdown("### Métricas del portafolio optimizado")
         st.table(pd.Series(metrics_opt, name="Valor"))
-
-        st.markdown("### Métricas del portafolio optimizado")
-        st.write(f"**Rendimiento esperado:** {ret_opt:.4%}")
-        st.write(f"**Volatilidad:** {vol_opt:.4%}")
-        st.write(f"**Sharpe (rf = {rf:.4%}):** {sharpe_opt:.4f}")
-
-if tipo_portafolio == "Black-Litterman":
-    st.subheader("Proceso en desarrollo, próximamente disponible.")
-    
