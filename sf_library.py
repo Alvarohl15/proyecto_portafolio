@@ -168,3 +168,82 @@ def obtener_momentos_desde_csv(tickers, data_dir="MarketData"):
     Sigma = returns_only.cov()
 
     return df, mu, Sigma
+def compute_portfolio_metrics(returns_df, weights, rf=0.0, market_col="SPLG"):
+    """
+    Calcula métricas de desempeño para un portafolio.
+
+    Parámetros
+    ----------
+    returns_df : pd.DataFrame
+        DataFrame con rendimientos de los activos (columnas = tickers).
+    weights : array-like
+        Pesos del portafolio (se normalizan para que sumen 1).
+    rf : float
+        Tasa libre de riesgo por periodo.
+    market_col : str
+        Columna a usar como índice de mercado para el cálculo de beta.
+
+    Regresa
+    -------
+    dict con métricas (media, volatilidad, Sharpe, Sortino, VaR, etc.)
+    """
+    w = np.asarray(weights, dtype=float)
+    if w.sum() == 0:
+        raise ValueError("La suma de los pesos es 0.")
+    w = w / w.sum()
+
+    # Serie de rendimientos del portafolio
+    port_ret = returns_df.dot(w)
+
+    # Media y volatilidad
+    mu = port_ret.mean()
+    sigma = port_ret.std()
+
+    # Sharpe
+    sharpe = (mu - rf) / sigma if sigma > 0 else np.nan
+
+    # Sortino (solo desviación de rendimientos por debajo de rf)
+    downside = port_ret[port_ret < rf]
+    downside_std = downside.std()
+    sortino = (mu - rf) / downside_std if downside_std > 0 else np.nan
+
+    # Max drawdown
+    cum = (1 + port_ret).cumprod()
+    running_max = cum.cummax()
+    drawdown = cum / running_max - 1.0
+    max_dd = drawdown.min()
+
+    # Skewness y kurtosis
+    skew = port_ret.skew()
+    kurt = port_ret.kurtosis()
+
+    # Alpha simple
+    alpha = mu - rf
+
+    # VaR y CVaR al 95%
+    q95 = port_ret.quantile(0.05)
+    var_95 = -q95
+    cvar_95 = -port_ret[port_ret <= q95].mean()
+
+    # Beta vs mercado (si existe esa columna)
+    beta = np.nan
+    if market_col in returns_df.columns:
+        mkt = returns_df[market_col]
+        cov = np.cov(port_ret, mkt)[0, 1]
+        var_mkt = mkt.var()
+        if var_mkt > 0:
+            beta = cov / var_mkt
+
+    return {
+        "Media": mu,
+        "Volatilidad": sigma,
+        "Sharpe": sharpe,
+        "Sortino": sortino,
+        "α (retorno - rf)": alpha,
+        "Skewness": skew,
+        "Kurtosis": kurt,
+        "Max Drawdown": max_dd,
+        "VaR 95%": var_95,
+        "CVaR 95%": cvar_95,
+        "Beta vs mercado": beta,
+    }
