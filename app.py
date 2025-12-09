@@ -2,6 +2,15 @@ import streamlit as st
 import pandas as pd
 import math
 from pathlib import Path
+import numpy as np
+from sf_library import TICKERS_REGIONES, TICKERS_SECTORES, obtener_momentos_desde_csv
+from optimization import (
+    optimize_min_variance,
+    optimize_max_sharpe,
+    optimize_markowitz_target,
+    port_return,
+    port_vol,
+)
 
 #booleano para definir si es portafolio arbitrario
 arbitrario=False
@@ -71,7 +80,32 @@ st.table({
         "ETF que sigue el índice de servicios públicos."
     ]
 })
+# elección de universo y cálculo de μ y Σ
+st.subheader("Universo de inversión a analizar")
 
+universo = st.selectbox(
+    "Selecciona el universo de inversión que quieres analizar:",
+    ["Regiones", "Sectores"],
+    index=0,
+)
+
+if universo == "Regiones":
+    tickers_universo = TICKERS_REGIONES
+else:
+    tickers_universo = TICKERS_SECTORES
+
+df_universo, mu_universo, Sigma_universo = obtener_momentos_desde_csv(tickers_universo)
+
+st.write("Tickers del universo seleccionado:", tickers_universo)
+
+col_mu, col_sigma = st.columns(2)
+with col_mu:
+    st.markdown("**Rendimientos esperados μ (promedio):**")
+    st.dataframe(mu_universo.to_frame("μ"))
+
+with col_sigma:
+    st.markdown("**Matriz de varianza–covarianza Σ:**")
+    st.dataframe(Sigma_universo)
 # Elección del analisis del portafolio
 tipo_portafolio = st.selectbox(
     "Por favor, seleccione el tipo de Análisis del Portafolio que desea usar:",
@@ -119,7 +153,7 @@ with st.sidebar:
     
     if arbitrario:
         #######Input de pesos para portafolio arbitrario########
-        with right_s:
+        with right_S:
             st.number_input(
                 "Peso asignado",
                 min_value=0.0,
@@ -396,14 +430,52 @@ if tipo_portafolio == "Optimizado":
     '''
     Seleccione el método deseado y ajuste los parámetros según sus preferencias para obtener recomendaciones personalizadas.
     '''
-    meotodo_optimizado = st.selectbox(
+    metodo_optimizado = st.selectbox(
         "Por favor, seleccione el método de optimización:",
         ("Mínima Varianza", "Máximo Sharpe", "Markowitz"),
-        index=None,
-        placeholder="Seleccione metodo de optimización...",
+        index=0,
     )
 
-    st.button("Calcular Análisis del Portafolio Optimizado")
+    rf = st.number_input(
+        "Tasa libre de riesgo (rf, por periodo)",
+        value=0.0,
+        step=0.001,
+        format="%.4f",
+    )
+
+    r_target = None
+    if metodo_optimizado == "Markowitz":
+        r_target = st.number_input(
+            "Rendimiento objetivo (misma base temporal que μ)",
+            value=float(mu_universo.mean()),
+            step=0.001,
+            format="%.4f",
+        )
+
+    if st.button("Calcular Análisis del Portafolio Optimizado"):
+        mu_vals = mu_universo.values
+        Sigma_vals = Sigma_universo.values
+
+        if metodo_optimizado == "Mínima Varianza":
+            w_opt, res = optimize_min_variance(mu_vals, Sigma_vals, short=False)
+        elif metodo_optimizado == "Máximo Sharpe":
+            w_opt, res = optimize_max_sharpe(mu_vals, Sigma_vals, rf=rf, short=False)
+        else:
+            w_opt, res = optimize_markowitz_target(mu_vals, Sigma_vals, r_target, short=False)
+
+        ret_opt = port_return(w_opt, mu_vals)
+        vol_opt = port_vol(w_opt, Sigma_vals)
+        sharpe_opt = (ret_opt - rf) / vol_opt if vol_opt > 0 else float("nan")
+
+        st.markdown("### Pesos óptimos del portafolio")
+        st.dataframe(
+            pd.DataFrame({"Ticker": tickers_universo, "Peso": w_opt}).set_index("Ticker")
+        )
+
+        st.markdown("### Métricas del portafolio optimizado")
+        st.write(f"**Rendimiento esperado:** {ret_opt:.4%}")
+        st.write(f"**Volatilidad:** {vol_opt:.4%}")
+        st.write(f"**Sharpe (rf = {rf:.4%}):** {sharpe_opt:.4f}")
 
 if tipo_portafolio == "Black-Litterman":
     st.subheader("Proceso en desarrollo, próximamente disponible.")
