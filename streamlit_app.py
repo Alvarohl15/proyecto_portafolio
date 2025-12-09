@@ -239,42 +239,45 @@ if tipo_portafolio == "Optimizado":
     metodo_optimizado = st.selectbox(
         "Por favor, seleccione el método de optimización:",
         ("Mínima Varianza", "Máximo Sharpe", "Markowitz"),
-        index=0,
+        index=None,
+        placeholder="Seleccione método de optimización...",
     )
 
-    rf = st.number_input(
-        "Tasa libre de riesgo (rf, por periodo)",
-        value=0.0,
-        step=0.001,
-        format="%.4f",
-    )
-
-    r_target = None
-    if metodo_optimizado == "Markowitz":
-        r_target = st.number_input(
-            "Rendimiento objetivo (misma base temporal que μ)",
-            value=float(mu_universo.mean()),
+    # Solo mostramos inputs y botón si ya eligió un método
+    if metodo_optimizado is not None:
+        rf = st.number_input(
+            "Tasa libre de riesgo (rf, por periodo)",
+            value=0.0,
             step=0.001,
             format="%.4f",
         )
 
-    if st.button("Calcular Análisis del Portafolio Optimizado"):
-        mu_vals = mu_universo.values
-        Sigma_vals = Sigma_universo.values
+        r_target = None
+        if metodo_optimizado == "Markowitz":
+            r_target = st.number_input(
+                "Rendimiento objetivo (misma base temporal que μ)",
+                value=float(mu_universo.mean()),
+                step=0.001,
+                format="%.4f",
+            )
 
-        if metodo_optimizado == "Mínima Varianza":
-            w_opt, res = optimize_min_variance(mu_vals, Sigma_vals, short=False)
-        elif metodo_optimizado == "Máximo Sharpe":
-            w_opt, res = optimize_max_sharpe(mu_vals, Sigma_vals, rf=rf, short=False)
-        else:
-            w_opt, res = optimize_markowitz_target(mu_vals, Sigma_vals, r_target, short=False)
+        if st.button("Calcular Análisis del Portafolio Optimizado"):
+            mu_vals = mu_universo.values
+            Sigma_vals = Sigma_universo.values
 
-        metrics_opt = compute_portfolio_metrics(returns_universo, w_opt, rf=rf)
+            if metodo_optimizado == "Mínima Varianza":
+                w_opt, res = optimize_min_variance(mu_vals, Sigma_vals, short=False)
+            elif metodo_optimizado == "Máximo Sharpe":
+                w_opt, res = optimize_max_sharpe(mu_vals, Sigma_vals, rf=rf, short=False)
+            else:
+                w_opt, res = optimize_markowitz_target(mu_vals, Sigma_vals, r_target, short=False)
 
-        st.markdown("### Pesos óptimos del portafolio")
-        st.dataframe(
-            pd.DataFrame({"Ticker": tickers_universo, "Peso": w_opt}).set_index("Ticker")
-        )
+            metrics_opt = compute_portfolio_metrics(returns_universo, w_opt, rf=rf)
 
-        st.markdown("### Métricas del portafolio optimizado")
-        st.table(pd.Series(metrics_opt, name="Valor"))
+            st.markdown("### Pesos óptimos del portafolio")
+            st.dataframe(
+                pd.DataFrame({"Ticker": tickers_universo, "Peso": w_opt}).set_index("Ticker")
+            )
+
+            st.markdown("### Métricas del portafolio optimizado")
+            st.table(pd.Series(metrics_opt, name="Valor"))
