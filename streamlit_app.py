@@ -3,7 +3,7 @@ import pandas as pd
 import math
 from pathlib import Path
 import numpy as np
-from sf_library import TICKERS_REGIONES, TICKERS_SECTORES, obtener_momentos_desde_csv
+from sf_library import TICKERS_REGIONES, TICKERS_SECTORES, obtener_momentos_desde_csv, compute_portafolio_metrics
 from optimization import (
     optimize_min_variance,
     optimize_max_sharpe,
@@ -95,6 +95,7 @@ else:
     tickers_universo = TICKERS_SECTORES
 
 df_universo, mu_universo, Sigma_universo = obtener_momentos_desde_csv(tickers_universo)
+returns_universo = df_universo.drop(columns="date")  # solo rendimientos
 
 st.write("Tickers del universo seleccionado:", tickers_universo)
 
@@ -420,7 +421,50 @@ if tipo_portafolio == "Arbitrario":
             step=0.1,
             key="W_XLU",
         )
-    
+        rf_arbitrario = st.number_input(
+        "Tasa libre de riesgo (rf, por periodo) para el análisis del portafolio arbitrario",
+        value=0.0,
+        step=0.001,
+        format="%.4f",
+    )
+
+    if st.button("Calcular Analisis del Portafolio Arbitrario", horizontal_alignment='right'):
+        # Orden de los tickers (regiones + sectores)
+        tickers_all = TICKERS_REGIONES + TICKERS_SECTORES
+
+        # Leemos los pesos desde st.session_state (en %)
+        pesos_pct = [
+            st.session_state["W_SPLG"],
+            st.session_state["W_EWC"],
+            st.session_state["W_IEUR"],
+            st.session_state["W_EEM"],
+            st.session_state["W_EWJ"],
+            st.session_state["W_XLC"],
+            st.session_state["W_XLY"],
+            st.session_state["W_XLP"],
+            st.session_state["W_XLE"],
+            st.session_state["W_XLF"],
+            st.session_state["W_XLV"],
+            st.session_state["W_XLI"],
+            st.session_state["W_XLB"],
+            st.session_state["W_XLRE"],
+            st.session_state["W_XLK"],
+            st.session_state["W_XLU"],
+        ]
+
+        w = np.array(pesos_pct) / 100.0
+
+        if not np.isclose(w.sum(), 1.0):
+            st.warning(f"Los pesos suman {w.sum():.2f}. Se recomienda que la suma sea 1 (100%).")
+
+        # Rendimientos históricos de todos los tickers
+        df_all, _, _ = obtener_momentos_desde_csv(tickers_all)
+        returns_all = df_all.drop(columns="date")
+
+        metrics = compute_portfolio_metrics(returns_all, w, rf=rf_arbitrario)
+
+        st.subheader("Métricas del portafolio arbitrario")
+        st.table(pd.Series(metrics, name="Valor"))
     st.button("Calcular Analisis del Portafolio Arbitrario",horizontal_alignment='right')
 
 
@@ -465,14 +509,16 @@ if tipo_portafolio == "Optimizado":
         else:
             w_opt, res = optimize_markowitz_target(mu_vals, Sigma_vals, r_target, short=False)
 
-        ret_opt = port_return(w_opt, mu_vals)
-        vol_opt = port_vol(w_opt, Sigma_vals)
-        sharpe_opt = (ret_opt - rf) / vol_opt if vol_opt > 0 else float("nan")
+        
+        metrics_opt = compute_portfolio_metrics(returns_universo, w_opt, rf=rf)
 
         st.markdown("### Pesos óptimos del portafolio")
         st.dataframe(
             pd.DataFrame({"Ticker": tickers_universo, "Peso": w_opt}).set_index("Ticker")
         )
+
+        st.markdown("### Métricas del portafolio optimizado")
+        st.table(pd.Series(metrics_opt, name="Valor"))
 
         st.markdown("### Métricas del portafolio optimizado")
         st.write(f"**Rendimiento esperado:** {ret_opt:.4%}")
