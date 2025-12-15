@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 from sf_library import (
     TICKERS_REGIONES,
@@ -92,6 +94,20 @@ with col_mu:
 with col_sigma:
     st.markdown("**Matriz de varianza–covarianza Σ:**")
     st.dataframe(Sigma_universo)
+
+fig, ax = plt.subplots(figsize=(18, 16))
+
+sns.heatmap(
+    Sigma_universo,
+    annot=True,     
+    fmt=".2f",      
+    cmap="coolwarm",
+    vmin=0,
+    vmax=1,
+    ax=ax           
+)
+
+st.pyplot(fig)
 
 # ===================== TIPO DE ANÁLISIS =====================
 
