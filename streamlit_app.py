@@ -275,9 +275,11 @@ if tipo_portafolio == "Optimizado":
             metrics_opt = compute_portfolio_metrics(returns_universo, w_opt, rf=rf)
 
             st.markdown("### Pesos óptimos del portafolio")
+            df_pesos=pd.DataFrame({"Ticker": tickers_universo, "Peso": w_opt}).set_index("Ticker")
             st.dataframe(
-                pd.DataFrame({"Ticker": tickers_universo, "Peso": w_opt}).set_index("Ticker")
+                df_pesos
             )
 
             st.markdown("### Métricas del portafolio optimizado")
             st.table(pd.Series(metrics_opt, name="Valor"))
+            st.scatter_chart(df_pesos)
