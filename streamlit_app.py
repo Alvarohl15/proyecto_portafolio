@@ -81,7 +81,7 @@ if universo == "Regiones":
 else:
     tickers_universo = TICKERS_SECTORES
 
-df_universo, mu_universo, Sigma_universo = obtener_momentos_desde_csv(tickers_universo)
+df_universo, mu_universo, Sigma_universo, corr = obtener_momentos_desde_csv(tickers_universo)
 returns_universo = df_universo.drop(columns="date")  # solo rendimientos
 
 st.write("Tickers del universo seleccionado:", tickers_universo)
@@ -98,7 +98,7 @@ with col_sigma:
 fig, ax = plt.subplots(figsize=(18, 16))
 
 sns.heatmap(
-    Sigma_universo,
+    corr,
     annot=True,     
     fmt=".2f",      
     cmap="coolwarm",

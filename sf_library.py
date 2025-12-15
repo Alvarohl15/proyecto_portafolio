@@ -166,8 +166,9 @@ def obtener_momentos_desde_csv(tickers, data_dir="MarketData"):
     returns_only = df.drop(columns="date")
     mu = returns_only.mean()
     Sigma = returns_only.cov()
+    corr=returns_only.corr()
 
-    return df, mu, Sigma
+    return df, mu, Sigma, corr
 def compute_portfolio_metrics(returns_df, weights, rf=0.0, market_col="SPLG"):
     """
     Calcula métricas de desempeño para un portafolio.
