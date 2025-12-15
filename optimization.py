@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sf_library as sfl
-from scipy.optimize import minimize
+import scipy.optimize as op
 
 sectores = [
     'XLK',  # Tecnología
@@ -65,6 +65,8 @@ sns.heatmap(
 plt.title("Matriz de Correlaciones de Tickers")
 plt.tight_layout()
 plt.show()
+
+
 # ============================================
 # FUNCIONES DE OPTIMIZACIÓN (MARKOWITZ)
 # ============================================
@@ -99,6 +101,25 @@ def port_vol(w, Sigma):
     return float(np.sqrt(w @ Sigma @ w))
 
 
+# =====================================================================
+# Función rendimiento y riesgo del portafolio
+# =====================================================================
+def portfolio_performance(weights, mean_returns, cov_matrix):
+    """
+    Calcula retorno y volatilidad del portafolio.
+    Fórmulas:
+        rp = w^T μ
+        σp = sqrt(w^T Σ w)
+    """
+    ret = np.dot(weights, mean_returns)                # w^T μ
+    vol = np.sqrt(weights @ cov_matrix @ weights.T)    # sqrt(w^T Σ w)
+    return ret, vol
+
+
+#Funciones de Optimización#
+
+#############Minima Volatilidad##############
+
 def optimize_min_variance(mu, Sigma, short=False):
     """
     Portafolio de MÍNIMA VARIANZA:
@@ -116,11 +137,28 @@ def optimize_min_variance(mu, Sigma, short=False):
     bounds = None if short else [(0.0, 1.0)] * n
     w0 = np.ones(n) / n
 
-    res = minimize(obj, w0, method="SLSQP", bounds=bounds, constraints=cons)
+    res = op.minimize(obj, w0, method="SLSQP", bounds=bounds, constraints=cons)
 
     return res.x, res
 
+def minimize_volatility(mu, Sigma, short=False):
+    mu, Sigma, n = _check_inputs(mu, Sigma)
 
+    x0 = np.ones(n)/n      # Condición inicial: pesos iguales
+    bounds = tuple((0,1) for _ in range(n))  # Pesos entre 0 y 1 (no short)
+    constraints = ({'type':'eq','fun':lambda w: np.sum(w)-1})  # Suma de pesos = 1
+
+    # Minimizamos solo la volatilidad:
+    # minimize( σp(w) )
+
+    result = op.minimize(
+        lambda w: portfolio_performance(w)[1],
+        x0, constraints=constraints, bounds=bounds
+    )
+    return result.x, portfolio_performance(result.x)
+
+
+#############Maximo Sharpe##############
 def optimize_max_sharpe(mu, Sigma, rf=0.0, short=False):
     """
     Portafolio de MÁXIMO SHARPE:
@@ -141,7 +179,7 @@ def optimize_max_sharpe(mu, Sigma, rf=0.0, short=False):
     bounds = None if short else [(0.0, 1.0)] * n
     w0 = np.ones(n) / n
 
-    res = minimize(neg_sharpe, w0, method="SLSQP", bounds=bounds, constraints=cons)
+    res = op.minimize(neg_sharpe, w0, method="SLSQP", bounds=bounds, constraints=cons)
 
     return res.x, res
 
@@ -167,6 +205,6 @@ def optimize_markowitz_target(mu, Sigma, r_target, short=False):
     bounds = None if short else [(0.0, 1.0)] * n
     w0 = np.ones(n) / n
 
-    res = minimize(obj, w0, method="SLSQP", bounds=bounds, constraints=cons)
+    res = op.minimize(obj, w0, method="SLSQP", bounds=bounds, constraints=cons)
 
     return res.x, res

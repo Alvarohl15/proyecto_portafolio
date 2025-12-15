@@ -107,6 +107,7 @@ sns.heatmap(
     ax=ax           
 )
 
+st.markdown("**Matriz de Correlaciones")
 st.pyplot(fig)
 
 # ===================== TIPO DE ANÁLISIS =====================
@@ -162,46 +163,48 @@ if tipo_portafolio == "Arbitrario":
     st.markdown("Define el peso (en %) de cada ETF del portafolio.")
 
     # Pesos regionales
-    regionales = st.columns(5)
-    with regionales[0]:
-        st.number_input("SPLG", 0.0, 100.0, 0.0, 0.1, key="W_SPLG")
-    with regionales[1]:
-        st.number_input("EWC", 0.0, 100.0, 0.0, 0.1, key="W_EWC")
-    with regionales[2]:
-        st.number_input("IEUR", 0.0, 100.0, 0.0, 0.1, key="W_IEUR")
-    with regionales[3]:
-        st.number_input("EEM", 0.0, 100.0, 0.0, 0.1, key="W_EEM")
-    with regionales[4]:
-        st.number_input("EWJ", 0.0, 100.0, 0.0, 0.1, key="W_EWJ")
+    if universo == "Regiones":
+        regionales = st.columns(5)
+        with regionales[0]:
+            st.number_input("SPLG", 0.0, 100.0, 0.0, 0.1, key="W_SPLG")
+        with regionales[1]:
+            st.number_input("EWC", 0.0, 100.0, 0.0, 0.1, key="W_EWC")
+        with regionales[2]:
+            st.number_input("IEUR", 0.0, 100.0, 0.0, 0.1, key="W_IEUR")
+        with regionales[3]:
+            st.number_input("EEM", 0.0, 100.0, 0.0, 0.1, key="W_EEM")
+        with regionales[4]:
+            st.number_input("EWJ", 0.0, 100.0, 0.0, 0.1, key="W_EWJ")
 
     # Pesos sectoriales
-    sectoriales_1 = st.columns(5)
-    with sectoriales_1[0]:
-        st.number_input("XLC", 0.0, 100.0, 0.0, 0.1, key="W_XLC")
-    with sectoriales_1[1]:
-        st.number_input("XLY", 0.0, 100.0, 0.0, 0.1, key="W_XLY")
-    with sectoriales_1[2]:
-        st.number_input("XLP", 0.0, 100.0, 0.0, 0.1, key="W_XLP")
-    with sectoriales_1[3]:
-        st.number_input("XLE", 0.0, 100.0, 0.0, 0.1, key="W_XLE")
-    with sectoriales_1[4]:
-        st.number_input("XLF", 0.0, 100.0, 0.0, 0.1, key="W_XLF")
+    else:
+        sectoriales_1 = st.columns(5)
+        with sectoriales_1[0]:
+            st.number_input("XLC", 0.0, 100.0, 0.0, 0.1, key="W_XLC")
+        with sectoriales_1[1]:
+            st.number_input("XLY", 0.0, 100.0, 0.0, 0.1, key="W_XLY")
+        with sectoriales_1[2]:
+            st.number_input("XLP", 0.0, 100.0, 0.0, 0.1, key="W_XLP")
+        with sectoriales_1[3]:
+            st.number_input("XLE", 0.0, 100.0, 0.0, 0.1, key="W_XLE")
+        with sectoriales_1[4]:
+            st.number_input("XLF", 0.0, 100.0, 0.0, 0.1, key="W_XLF")
 
-    sectoriales_2 = st.columns(5)
-    with sectoriales_2[0]:
-        st.number_input("XLV", 0.0, 100.0, 0.0, 0.1, key="W_XLV")
-    with sectoriales_2[1]:
-        st.number_input("XLI", 0.0, 100.0, 0.0, 0.1, key="W_XLI")
-    with sectoriales_2[2]:
-        st.number_input("XLB", 0.0, 100.0, 0.0, 0.1, key="W_XLB")
-    with sectoriales_2[3]:
-        st.number_input("XLRE", 0.0, 100.0, 0.0, 0.1, key="W_XLRE")
-    with sectoriales_2[4]:
-        st.number_input("XLK", 0.0, 100.0, 0.0, 0.1, key="W_XLK")
+        sectoriales_2 = st.columns(5)
+        with sectoriales_2[0]:
+            st.number_input("XLV", 0.0, 100.0, 0.0, 0.1, key="W_XLV")
+        with sectoriales_2[1]:
+            st.number_input("XLI", 0.0, 100.0, 0.0, 0.1, key="W_XLI")
+        with sectoriales_2[2]:
+            st.number_input("XLB", 0.0, 100.0, 0.0, 0.1, key="W_XLB")
+        with sectoriales_2[3]:
+            st.number_input("XLRE", 0.0, 100.0, 0.0, 0.1, key="W_XLRE")
+        with sectoriales_2[4]:
+            st.number_input("XLK", 0.0, 100.0, 0.0, 0.1, key="W_XLK")
 
-    regionales_3 = st.columns(5)
-    with regionales_3[0]:
-        st.number_input("XLU", 0.0, 100.0, 0.0, 0.1, key="W_XLU")
+        regionales_3 = st.columns(5)
+        with regionales_3[0]:
+            st.number_input("XLU", 0.0, 100.0, 0.0, 0.1, key="W_XLU")
 
     rf_arbitrario = st.number_input(
         "Tasa libre de riesgo (rf, por periodo) para el análisis del portafolio arbitrario",
@@ -278,8 +281,8 @@ if tipo_portafolio == "Optimizado":
             )
 
         if st.button("Calcular Análisis del Portafolio Optimizado"):
-            mu_vals = mu_universo.values
-            Sigma_vals = Sigma_universo.values
+            mu_vals = mu_universo.values*252 #anualizado
+            Sigma_vals = Sigma_universo.values*252 #anualizado
 
             if metodo_optimizado == "Mínima Varianza":
                 w_opt, res = optimize_min_variance(mu_vals, Sigma_vals, short=False)
