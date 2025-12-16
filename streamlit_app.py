@@ -320,12 +320,20 @@ if tipo_portafolio == "Black-Litterman":
 
     st.markdown("""En esta sección puedes definir **vistas absolutas o relativas**, junto con tu **nivel de confianza**.""")
     
+    rf = st.number_input(
+        "Tasa libre de riesgo (rf, por periodo)",
+        value=0.0,
+        step=0.001,
+        format="%.4f",
+    )
+
     r_target_bl = st.number_input(
         "Rendimiento objetivo (misma base temporal que μ)",
         value=float(mu_universo.mean()),
         step=0.001,
         format="%.4f",
     )
+
     
     if universo == "Regiones":
         # Número de vistas
@@ -433,8 +441,6 @@ if tipo_portafolio == "Black-Litterman":
     if st.button("Calcular Análisis del Portafolio bajo Black-Litterman"):
             mu_vals = mu_universo.values*252 #anualizado
             Sigma_vals = Sigma_universo.values*252 #anualizado
-            
-            st.write("Eigenvalues Omega:", Q)
 
             w_opt, res = optimize_BL_target(mu_vals, Sigma_vals, r_target_bl, df_P, df_Q, df_Omega, short=False)
             metrics_opt = compute_portfolio_metrics(returns_universo, w_opt, rf=rf)
