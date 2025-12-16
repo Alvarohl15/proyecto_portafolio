@@ -67,24 +67,6 @@ st.table({
     ]
 })
 
-########### Inicialización de Pesos de los ETF #############
-
-W_SPLG=0
-W_EWC=0
-W_IEUR=0
-W_EEM=0
-W_EWJ=0
-W_XLC=0
-W_XLY=0
-W_XLP=0
-W_XLE=0
-W_XLF=0
-W_XLV=0
-W_XLI=0
-W_XLB=0
-W_XLRE=0
-W_XLK=0
-W_XLU=0
 
 
 # ===================== UNIVERSO =====================
@@ -157,11 +139,12 @@ with st.sidebar:
             st.write("EWJ")
 
         with right:
-            st.write(W_SPLG)
-            st.write(W_EWC)
-            st.write(W_IEUR)
-            st.write(W_EEM)
-            st.write(W_EWJ)
+            st.write(st.session_state["W_SPLG"])
+            st.write(st.session_state["W_EWC"])
+            st.write(st.session_state["W_IEUR"])
+            st.write(st.session_state["W_EEM"])
+            st.write(st.session_state["W_EWJ"])
+                
 
     else:
         st.subheader("ETFs Sectoriales")
@@ -181,17 +164,17 @@ with st.sidebar:
             st.write("XLU")
 
         with right_S:
-            st.write(W_XLC)
-            st.write(W_XLY)
-            st.write(W_XLP)
-            st.write(W_XLE)
-            st.write(W_XLF)
-            st.write(W_XLV)
-            st.write(W_XLI)
-            st.write(W_XLB)
-            st.write(W_XLRE)
-            st.write(W_XLK)
-            st.write(W_XLU)
+            st.write(0)
+            st.write(0)
+            st.write(0)
+            st.write(0)
+            st.write(0)
+            st.write(0)
+            st.write(0)
+            st.write(0)
+            st.write(0)
+            st.write(0)
+            st.write(0)
 
 # ===================== PORTAFOLIO ARBITRARIO =====================
 
@@ -262,11 +245,6 @@ if tipo_portafolio == "Arbitrario":
                 st.session_state["W_EEM"],
                 st.session_state["W_EWJ"]
             ]
-            W_SPLG=st.session_state["W_SPLG"]
-            W_EWC=st.session_state["W_EWC"],
-            W_IEUR=st.session_state["W_IEUR"],
-            W_EEM=st.session_state["W_EEM"],
-            W_EWJ=st.session_state["W_EWJ"]
         else:
             pesos_pct = [
                 st.session_state["W_XLC"],
