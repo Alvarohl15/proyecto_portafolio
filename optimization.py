@@ -209,8 +209,8 @@ def optimize_BL_target(mu, Sigma, r_target,P, Q, Omega, short=False):
              (y w >= 0 si short = False)
     """
     
-    mu_bl, Sigma, n = _check_inputs(mu_bl, Sigma)
-    
+    mu, Sigma, n = _check_inputs(mu, Sigma)
+
     # Parámetros del modelo
     delta = 2.5  # aversión al riesgo
     tau = 0.05   # incertidumbre del mercado
