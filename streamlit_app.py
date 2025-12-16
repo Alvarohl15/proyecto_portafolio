@@ -404,7 +404,7 @@ if tipo_portafolio == "Black-Litterman":
             idx_2 = assets.index(asset_2)
             P[i, idx_2] = -1
 
-        Q[i,1] = expected_return
+        Q[i] = expected_return
 
         # Incertidumbre Ω
         # (menor confianza → mayor varianza)
@@ -434,7 +434,7 @@ if tipo_portafolio == "Black-Litterman":
             mu_vals = mu_universo.values*252 #anualizado
             Sigma_vals = Sigma_universo.values*252 #anualizado
             
-            st.write("Eigenvalues Omega:", np.linalg.eigvals(Omega))
+            st.write("Eigenvalues Omega:", Q)
 
             w_opt, res = optimize_BL_target(mu_vals, Sigma_vals, r_target_bl, df_P, df_Q, df_Omega, short=False)
             metrics_opt = compute_portfolio_metrics(returns_universo, w_opt, rf=rf)
