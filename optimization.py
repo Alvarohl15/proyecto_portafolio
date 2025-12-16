@@ -195,3 +195,44 @@ def optimize_markowitz_target(mu, Sigma, r_target, short=False):
     res = op.minimize(obj, w0, method="SLSQP", bounds=bounds, constraints=cons)
 
     return res.x, res
+
+
+
+#############Black-Litterman##############
+
+def optimize_BL_target(mu, Sigma, r_target,P, Q, Omega, short=False):
+    """
+    Portafolio de Black Litterman con RENDIMIENTO OBJETIVO:
+        min  w' Σ w
+        s.a. sum(w) = 1
+             w' mu = r_target
+             (y w >= 0 si short = False)
+    """
+    # Parámetros del modelo
+    delta = 2.5  # aversión al riesgo
+    tau = 0.05   # incertidumbre del mercado
+
+    w_mkt = np.ones(n) / n # Condición inicial: pesos iguales
+
+    # Retornos implícitos de equilibrio (pi)
+    pi = delta * Sigma @ w_mkt
+    
+    # Retornos esperados Black-Litterman
+    middle = np.linalg.inv(np.linalg.inv(tau * Sigma) + P.T @ np.linalg.inv(Omega) @ P)
+    mu_bl = middle @ (np.linalg.inv(tau * Sigma) @ pi + P.T @ np.linalg.inv(Omega) @ Q)
+
+    mu_bl, Sigma, n = _check_inputs(mu_bl, Sigma)
+    
+    def obj(w):
+        return w @ Sigma @ w.T
+
+    cons = [
+        {"type": "eq", "fun": lambda w: np.sum(w) - 1}, # Suma de pesos = 1
+        {"type": "eq", "fun": lambda w: np.dot(w, mu_bl) - r_target}, #rendimiento esperado
+    ]
+
+    bounds = tuple((0,1) for _ in range(n)) # Pesos entre 0 y 1 (no short)
+    
+    res = op.minimize(obj, w_mkt, method="SLSQP", bounds=bounds, constraints=cons)
+
+    return res.x, res

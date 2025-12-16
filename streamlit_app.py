@@ -15,6 +15,8 @@ from optimization import (
     optimize_min_variance,
     optimize_max_sharpe,
     optimize_markowitz_target,
+    optimize_BL_target,
+
 )
 
 # ===================== CONFIGURACIÓN DE LA APP =====================
@@ -304,7 +306,7 @@ if tipo_portafolio == "Optimizado":
             st.scatter_chart(df_pesos)
 
 
-# ===================== PORTAFOLIO ARBITRARIO =====================
+# ===================== PORTAFOLIO Black Litterman =====================
 
 if tipo_portafolio == "Black-Litterman":
     
@@ -320,6 +322,12 @@ if tipo_portafolio == "Black-Litterman":
     st.markdown("""
     En esta sección puedes definir **vistas absolutas o relativas**, junto con tu **nivel de confianza**.""")
     
+    r_target_bl = st.number_input(
+        "Rendimiento objetivo (misma base temporal que μ)",
+        value=float(mu_universo.mean()),
+        step=0.001,
+        format="%.4f",
+    )
     
     if universo == "Regiones":
         # Número de vistas
@@ -423,3 +431,20 @@ if tipo_portafolio == "Black-Litterman":
     with col3:
         st.markdown("### Matriz Ω")
         st.dataframe(df_Omega)
+
+    if st.button("Calcular Análisis del Portafolio bajo Black-Litterman"):
+            mu_vals = mu_universo.values*252 #anualizado
+            Sigma_vals = Sigma_universo.values*252 #anualizado
+            
+            w_opt, res = optimize_BL_target(mu_vals, Sigma_vals, r_target_bl, df_P, df_Q, df_Omega, short=False)
+            metrics_opt = compute_portfolio_metrics(returns_universo, w_opt, rf=rf)
+            
+            st.markdown("### Pesos óptimos del portafolio")
+            df_pesos=pd.DataFrame({"Ticker": tickers_universo, "Peso": w_opt}).set_index("Ticker")
+            st.dataframe(
+                df_pesos
+            )
+            
+            st.markdown("### Métricas del portafolio bajo Black Litterman")
+            st.table(pd.Series(metrics_opt, name="Valor"))
+            st.scatter_chart(df_pesos)
