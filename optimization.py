@@ -98,7 +98,7 @@ def port_vol(w, Sigma):
     """
     Volatilidad del portafolio: sqrt(w' Σ w)
     """
-    return float(np.sqrt(w @ Sigma @ w))
+    return float(np.sqrt(w @ Sigma @ w.T))
 
 
 # =====================================================================
@@ -144,22 +144,6 @@ def optimize_min_variance(mu, Sigma, short=False):
 
     return res.x, res
 
-def minimize_volatility(mu, Sigma, short=False):
-    mu, Sigma, n = _check_inputs(mu, Sigma)
-
-    x0 = np.ones(n)/n      # Condición inicial: pesos iguales
-    bounds = tuple((0,1) for _ in range(n))  # Pesos entre 0 y 1 (no short)
-    constraints = ({'type':'eq','fun':lambda w: np.sum(w)-1})  # Suma de pesos = 1
-
-    # Minimizamos solo la volatilidad:
-    # minimize( σp(w) )
-
-    result = op.minimize(
-        lambda w: portfolio_performance(w)[1],
-        x0, constraints=constraints, bounds=bounds
-    )
-    return result.x, portfolio_performance(result.x)
-
 
 #############Maximo Sharpe##############
 def optimize_max_sharpe(mu, Sigma, rf=0.0, short=False):
@@ -178,9 +162,9 @@ def optimize_max_sharpe(mu, Sigma, rf=0.0, short=False):
             return 1e6
         return -(r - rf) / v   # negativo porque minimizamos
 
-    cons = [{"type": "eq", "fun": lambda w: np.sum(w) - 1.0}]
-    bounds = None if short else [(0.0, 1.0)] * n
-    w0 = np.ones(n) / n
+    bounds = tuple((0,1) for _ in range(n)) # Pesos entre 0 y 1 (no short)
+    cons = [{'type':'eq','fun':lambda w: np.sum(w) - 1}] # Suma de pesos = 1
+    w0 = np.ones(n) / n # Condición inicial: pesos iguales
 
     res = op.minimize(neg_sharpe, w0, method="SLSQP", bounds=bounds, constraints=cons)
 
@@ -198,15 +182,15 @@ def optimize_markowitz_target(mu, Sigma, r_target, short=False):
     mu, Sigma, n = _check_inputs(mu, Sigma)
 
     def obj(w):
-        return w @ Sigma @ w
+        return w @ Sigma @ w.T
 
     cons = [
-        {"type": "eq", "fun": lambda w: np.sum(w) - 1.0},
-        {"type": "eq", "fun": lambda w: np.dot(w, mu) - r_target},
+        {"type": "eq", "fun": lambda w: np.sum(w) - 1}, # Suma de pesos = 1
+        {"type": "eq", "fun": lambda w: np.dot(w, mu) - r_target}, #rendimiento esperado
     ]
 
-    bounds = None if short else [(0.0, 1.0)] * n
-    w0 = np.ones(n) / n
+    bounds = tuple((0,1) for _ in range(n)) # Pesos entre 0 y 1 (no short)
+    w0 = np.ones(n) / n # Condición inicial: pesos iguales
 
     res = op.minimize(obj, w0, method="SLSQP", bounds=bounds, constraints=cons)
 
