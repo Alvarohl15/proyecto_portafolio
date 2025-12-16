@@ -130,14 +130,17 @@ def optimize_min_variance(mu, Sigma, short=False):
     mu, Sigma, n = _check_inputs(mu, Sigma)
 
     def obj(w):
-        return w @ Sigma @ w
+        return w @ Sigma @ w.T
 
-    cons = [{"type": "eq", "fun": lambda w: np.sum(w) - 1.0}]
 
-    bounds = None if short else [(0.0, 1.0)] * n
-    w0 = np.ones(n) / n
+    bounds = tuple((0,1) for _ in range(n)) # Pesos entre 0 y 1 (no short)
+    cons = [{'type':'eq','fun':lambda w: np.sum(w) - 1}] # Suma de pesos = 1
+    w0 = np.ones(n) / n # Condición inicial: pesos iguales
 
-    res = op.minimize(obj, w0, method="SLSQP", bounds=bounds, constraints=cons)
+    res = op.minimize(
+        obj, 
+        w0, method="SLSQP", bounds=bounds, constraints=cons
+    )
 
     return res.x, res
 
