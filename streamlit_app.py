@@ -67,6 +67,26 @@ st.table({
     ]
 })
 
+########### Inicialización de Pesos de los ETF #############
+
+W_SPLG=0
+W_EWC=0
+W_IEUR=0
+W_EEM=0
+W_EWJ=0
+W_XLC=0
+W_XLY=0
+W_XLP=0
+W_XLE=0
+W_XLF=0
+W_XLV=0
+W_XLI=0
+W_XLB=0
+W_XLRE=0
+W_XLK=0
+W_XLU=0
+
+
 # ===================== UNIVERSO =====================
 
 st.subheader("Universo de inversión a analizar")
@@ -137,7 +157,11 @@ with st.sidebar:
             st.write("EWJ")
 
         with right:
-            st.write("Pesos definidos en la sección de análisis.")
+            st.write(W_SPLG)
+            st.write(W_EWC)
+            st.write(W_IEUR)
+            st.write(W_EEM)
+            st.write(W_EWJ)
 
     else:
         st.subheader("ETFs Sectoriales")
@@ -157,7 +181,17 @@ with st.sidebar:
             st.write("XLU")
 
         with right_S:
-            st.write("Pesos definidos en la sección de análisis.")
+            st.write(W_XLC)
+            st.write(W_XLY)
+            st.write(W_XLP)
+            st.write(W_XLE)
+            st.write(W_XLF)
+            st.write(W_XLV)
+            st.write(W_XLI)
+            st.write(W_XLB)
+            st.write(W_XLRE)
+            st.write(W_XLK)
+            st.write(W_XLU)
 
 # ===================== PORTAFOLIO ARBITRARIO =====================
 
@@ -228,6 +262,11 @@ if tipo_portafolio == "Arbitrario":
                 st.session_state["W_EEM"],
                 st.session_state["W_EWJ"]
             ]
+            W_SPLG=st.session_state["W_SPLG"]
+            W_EWC=st.session_state["W_EWC"],
+            W_IEUR=st.session_state["W_IEUR"],
+            W_EEM=st.session_state["W_EEM"],
+            W_EWJ=st.session_state["W_EWJ"]
         else:
             pesos_pct = [
                 st.session_state["W_XLC"],
@@ -253,11 +292,10 @@ if tipo_portafolio == "Arbitrario":
 
             metrics = compute_portfolio_metrics(returns_universo, w, rf=rf_arbitrario)
 
-            st.subheader("Métricas del portafolio arbitrario")
             v=pd.Series(metrics, name="Valor")
             v=v.round(6)
 
-            st.markdown("## 📊 Métricas del Portafolio")
+            st.markdown("## 📊 Métricas del Portafolio Arbitrario")
             col1, col2, col3 = st.columns(3)
 
             col1.metric("Retorno Medio", v["Media"])
@@ -336,12 +374,13 @@ if tipo_portafolio == "Optimizado":
             st.dataframe(
                 df_pesos
             )
+            
+            st.scatter_chart(df_pesos)
 
-            st.subheader("Métricas del portafolio optimizado")
             v=pd.Series(metrics_opt, name="Valor")
             v=v.round(6)
 
-            st.markdown("## 📊 Métricas del Portafolio")
+            st.markdown("## 📊 Métricas del Portafolio Optimizado")
             col1, col2, col3 = st.columns(3)
 
             col1.metric("Retorno Medio", v["Media"])
@@ -366,7 +405,6 @@ if tipo_portafolio == "Optimizado":
             col1.metric("CVaR 95%", v["CVaR 95%"])
             col2.metric("Beta vs Mercado", v["Beta vs mercado"])
 
-            st.scatter_chart(df_pesos)
 
 
 # ===================== PORTAFOLIO Black Litterman =====================
@@ -404,7 +442,7 @@ if tipo_portafolio == "Black-Litterman":
         k = st.number_input(
             "Número de vistas",
             min_value=1,
-            max_value=10,
+            max_value=4,
             value=1,
             step=1
         )
@@ -413,7 +451,7 @@ if tipo_portafolio == "Black-Litterman":
         k = st.number_input(
             "Número de vistas",
             min_value=1,
-            max_value=4,
+            max_value=10,
             value=1,
             step=1
         )
@@ -514,8 +552,34 @@ if tipo_portafolio == "Black-Litterman":
             st.dataframe(
                 df_pesos
             )
-
-            st.markdown("### Métricas del portafolio bajo Black Litterman")
-            
-            st.table(pd.Series(metrics_opt, name="Valor"))
             st.scatter_chart(df_pesos)
+
+            v=pd.Series(metrics_opt, name="Valor")
+            v=v.round(6)
+
+            st.markdown("## 📊 Métricas del Portafolio Optimizado")
+            col1, col2, col3 = st.columns(3)
+
+            col1.metric("Retorno Medio", v["Media"])
+            col2.metric("Volatilidad", v["Volatilidad"])
+            col3.metric("Sharpe Ratio", v["Sharpe"])
+
+            st.markdown("### ⚙️ Riesgo Ajustado")
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Sortino Ratio", v["Sortino"])
+            col2.metric("α (Retorno – rf)", v["α (retorno - rf)"])
+            col3.metric("Max Drawdown", v["Max Drawdown"])
+
+            st.markdown("### 📐 Distribución y Riesgo Extremo")
+
+            col1, col2, col3 = st.columns(3)
+
+            col1.metric("Skewness", v["Skewness"])
+            col2.metric("Kurtosis", v["Kurtosis"])
+            col3.metric("VaR 95%", v["VaR 95%"])
+
+            col1, col2, col3 = st.columns(3)
+            col1.metric("CVaR 95%", v["CVaR 95%"])
+            col2.metric("Beta vs Mercado", v["Beta vs mercado"])
+
+            
