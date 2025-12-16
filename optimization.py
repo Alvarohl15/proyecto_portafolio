@@ -200,40 +200,71 @@ def optimize_markowitz_target(mu, Sigma, r_target, short=False):
 
 #############Black-Litterman##############
 
-def optimize_BL_target(mu, Sigma, r_target,P, Q, Omega, short=False):
+def optimize_BL_target(mu, Sigma, r_target, P, Q, Omega, short=False):
     """
-    Portafolio de Black Litterman con RENDIMIENTO OBJETIVO:
-        min  w' Σ w
-        s.a. sum(w) = 1
-             w' mu = r_target
-             (y w >= 0 si short = False)
+    Portafolio Black–Litterman con rendimiento objetivo
     """
-    
+
     mu, Sigma, n = _check_inputs(mu, Sigma)
 
-    # Parámetros del modelo
-    delta = 2.5  # aversión al riesgo
-    tau = 0.05   # incertidumbre del mercado
+    # --------------------------
+    # Parámetros BL
+    # --------------------------
+    delta = 2.5
+    tau = 0.05
 
-    w_mkt = np.ones(n) / n # Condición inicial: pesos iguales
+    # --------------------------
+    # Portafolio de mercado
+    # --------------------------
+    w_mkt = np.ones(n) / n
 
-    # Retornos implícitos de equilibrio (pi)
+    # --------------------------
+    # Conversión robusta
+    # --------------------------
+    P = np.asarray(P)
+    Q = np.asarray(Q).reshape(-1)
+    Omega = np.asarray(Omega)
+
+    # Regularización Omega
+    eps = 1e-6
+    Omega = Omega + eps * np.eye(Omega.shape[0])
+
+    # --------------------------
+    # Retornos implícitos
+    # --------------------------
     pi = delta * Sigma @ w_mkt
-    
-    # Retornos esperados Black-Litterman
-    middle = np.linalg.inv(np.linalg.inv(tau * Sigma) + P.T @ np.linalg.inv(Omega) @ P)
-    mu_bl = middle @ (np.linalg.inv(tau * Sigma) @ pi + P.T @ np.linalg.inv(Omega) @ Q)
 
-    
+    # --------------------------
+    # Black–Litterman
+    # --------------------------
+    middle = np.linalg.inv(
+        np.linalg.inv(tau * Sigma) + P.T @ np.linalg.inv(Omega) @ P
+    )
+
+    mu_bl = middle @ (
+        np.linalg.inv(tau * Sigma) @ pi +
+        P.T @ np.linalg.inv(Omega) @ Q
+    )
+
+    # --------------------------
+    # Optimización
+    # --------------------------
     def obj(w):
-        return w @ Sigma @ w.T
+        return w.T @ Sigma @ w
 
     cons = [
-        {"type": "eq", "fun": lambda w: np.sum(w) - 1}, # Suma de pesos = 1
-        {"type": "eq", "fun": lambda w: np.dot(w, mu_bl) - r_target}, #rendimiento esperado
+        {"type": "eq", "fun": lambda w: np.sum(w) - 1},
+        {"type": "eq", "fun": lambda w: w @ mu_bl - r_target},
     ]
-    bounds = tuple((0,1) for _ in range(n)) # Pesos entre 0 y 1 (no short)
-    
-    res = op.minimize(obj, w_mkt, method="SLSQP", bounds=bounds, constraints=cons)
+
+    bounds = tuple((0, 1) for _ in range(n)) if not short else None
+
+    res = op.minimize(
+        obj,
+        w_mkt,
+        method="SLSQP",
+        bounds=bounds,
+        constraints=cons
+    )
 
     return res.x, res
