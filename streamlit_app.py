@@ -140,60 +140,32 @@ if tipo_portafolio == "Arbitrario":
     st.subheader("Análisis de Portafolio Arbitrario")
     st.markdown("Define el peso (en %) de cada ETF del portafolio.")
 
-    left_S, right_S  = st.columns(2)
     temp_weights = {}
 
     # Pesos regionales
     if universo == "Regiones":
-        with left_S:
-            st.write("SPLG")
-            st.write("EWC")
-            st.write("IEUR")
-            st.write("EEM")
-            st.write("EWJ")
-
-        with right_S:
-            for i in range(1, st.session_state.n_assets_arbitrary + 1):
-                temp_weights[f"Activo {i}"] = st.slider(
-                    f"Peso Activo {ETF_Regionales[i]}",
-                    min_value=0.0,
-                    max_value=1.0,
-                    value=0.0 if st.session_state.weights_arbitrary is None
-                        else st.session_state.weights_arbitrary.get(f"Activo {i}", 0.0),
-                    step=0.01,
-                    key=f"slider_activo_{i}"
-                )
-
-        
+        for i in range(1, st.session_state.n_assets_arbitrary + 1):
+            temp_weights[f"Activo {i}"] = st.slider(
+                f"Peso Activo {ETF_Regionales[i-1]}",
+                min_value=0.0,
+                max_value=1.0,
+                value=0.0 if st.session_state.weights_arbitrary is None
+                    else st.session_state.weights_arbitrary.get(f"Activo {i}", 0.0),
+                step=0.01,
+                key=f"slider_activo_{i}"
+            )
     # Pesos sectoriales
     else:
-        sectoriales_1 = st.columns(5)
-        with sectoriales_1[0]:
-            W_XLC=st.number_input("XLC", 0.0, 100.0, 0.0, 0.1)
-        with sectoriales_1[1]:
-            W_XLY=st.number_input("XLY", 0.0, 100.0, 0.0, 0.1)
-        with sectoriales_1[2]:
-            W_XLP=st.number_input("XLP", 0.0, 100.0, 0.0, 0.1)
-        with sectoriales_1[3]:
-            W_XLE=st.number_input("XLE", 0.0, 100.0, 0.0, 0.1)
-        with sectoriales_1[4]:
-            W_XLF=st.number_input("XLF", 0.0, 100.0, 0.0, 0.1)
-
-        sectoriales_2 = st.columns(5)
-        with sectoriales_2[0]:
-            W_XLV=st.number_input("XLV", 0.0, 100.0, 0.0, 0.1)
-        with sectoriales_2[1]:
-            W_XLI=st.number_input("XLI", 0.0, 100.0, 0.0, 0.1)
-        with sectoriales_2[2]:
-            W_XLB=st.number_input("XLB", 0.0, 100.0, 0.0, 0.1)
-        with sectoriales_2[3]:
-            W_XLRE=st.number_input("XLRE", 0.0, 100.0, 0.0, 0.1)
-        with sectoriales_2[4]:
-            W_XLK=st.number_input("XLK", 0.0, 100.0, 0.0, 0.1)
-
-        regionales_3 = st.columns(5)
-        with regionales_3[0]:
-            W_XLU=st.number_input("XLU", 0.0, 100.0, 0.0, 0.1)
+         for i in range(1, st.session_state.n_assets_arbitrary + 1):
+            temp_weights[f"Activo {i}"] = st.slider(
+                f"Peso Activo {ETF_Sectoriales[i-1]}",
+                min_value=0.0,
+                max_value=1.0,
+                value=0.0 if st.session_state.weights_arbitrary is None
+                    else st.session_state.weights_arbitrary.get(f"Activo {i}", 0.0),
+                step=0.01,
+                key=f"slider_activo_{i}"
+            )
 
     rf_arbitrario = st.number_input(
         "Tasa libre de riesgo (rf, por periodo) para el análisis del portafolio arbitrario",
