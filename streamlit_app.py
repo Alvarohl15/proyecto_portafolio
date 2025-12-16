@@ -204,15 +204,7 @@ if tipo_portafolio == "Arbitrario":
 
         with right_S:
             for a in n_assets:
-                temp_weights[a] = st.slider(
-                    a,
-                    0.0,
-                    1.0,
-                    value=0.0 if st.session_state.weights_arbitrary is None
-                        else st.session_state.weights_arbitrary.get(a, 0.0),
-                    step=0.01,
-                    key=f"slider_{a}"
-                )
+                temp_weights[a] = st.slider(a, 0.0, 1.0, value=0.0 if st.session_state.weights_arbitrary is None else st.session_state.weights_arbitrary.get(a, 0.0), step=0.01, key=f"slider_{a}")
 
         
     # Pesos sectoriales
