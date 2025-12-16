@@ -133,6 +133,7 @@ with st.sidebar:
     
     if universo == "Regiones":
         st.subheader("ETFs Regionales")
+        assets=range(1,5)
 
         left, right = st.columns([2, 1], vertical_alignment='center')
         with left:
@@ -143,12 +144,13 @@ with st.sidebar:
             st.write("EWJ")
 
         with right:
-            st.write(st.session_state["W_SPLG"])
-            st.write({st.session_state["W_EWC"]})
-            st.write({st.session_state["W_IEUR"]})
-            st.write({st.session_state["W_EEM"]})
-            st.write({st.session_state["W_EWJ"]})
-                
+            if st.session_state.weights_arbitrary is None:
+                for _ in assets:
+                    st.write("—")
+            else:
+                for a in assets:
+                    st.write(f"{st.session_state.weights_arbitrary[a]:.4f}")
+                        
 
     else:
         st.subheader("ETFs Sectoriales")
