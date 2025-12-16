@@ -248,10 +248,8 @@ if tipo_portafolio == "Arbitrario":
         if not np.isclose(w.sum(), 1.0):
             st.warning(f"Los pesos suman {w.sum():.2f}. Se recomienda que la suma sea 1 (100%).")
         else:
-            df_all, mu, Sigma, corr = obtener_momentos_desde_csv(tickers_all)
-            returns_all = df_all.drop(columns="date")
 
-            metrics = compute_portfolio_metrics(returns_all, w, rf=rf_arbitrario)
+            metrics = compute_portfolio_metrics(returns_universo, w, rf=rf_arbitrario)
 
             st.subheader("Métricas del portafolio arbitrario")
             st.table(pd.Series(metrics, name="Valor"))
