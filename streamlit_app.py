@@ -36,6 +36,7 @@ para que puedas evaluar tus decisiones de inversión de forma sencilla y eficien
 '''
 
 # ===================== TABLAS DE ETFs =====================
+ETF_Regionales=["SPLG", "EWC", "IEUR", "EEM", "EWJ"]
 
 st.subheader("ETFs Regionales Disponibles")
 st.table({
@@ -48,6 +49,8 @@ st.table({
         "ETF que sigue el índice de acciones japonesas."
     ]
 })
+
+ETF_Sectoriales=["XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLB", "XLRE", "XLK", "XLU"]
 
 st.subheader("ETFs Sectoriales Disponibles")
 st.table({
@@ -152,7 +155,7 @@ if tipo_portafolio == "Arbitrario":
         with right_S:
             for i in range(1, st.session_state.n_assets_arbitrary + 1):
                 temp_weights[f"Activo {i}"] = st.slider(
-                    f"Peso Activo {"ETFs Regionales"[i]}",
+                    f"Peso Activo {ETF_Regionales[i]}",
                     min_value=0.0,
                     max_value=1.0,
                     value=0.0 if st.session_state.weights_arbitrary is None
