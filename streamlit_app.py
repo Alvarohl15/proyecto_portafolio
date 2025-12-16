@@ -130,62 +130,6 @@ tipo_portafolio = st.selectbox(
     placeholder="Seleccione método de análisis...",
 )
 
-# ===================== SIDEBAR (INFO) =====================
-
-with st.sidebar:
-    st.header("Definición de Pesos de los Activos")
-    
-    if universo == "Regiones":
-        st.subheader("ETFs Regionales")
-        assets=range(1,5)
-
-        left, right = st.columns([2, 1], vertical_alignment='center')
-        with left:
-            st.write("SPLG")
-            st.write("EWC")
-            st.write("IEUR")
-            st.write("EEM")
-            st.write("EWJ")
-
-        with right:
-            if st.session_state.weights_arbitrary is None:
-                for _ in assets:
-                    st.write("—")
-            else:
-                for a in assets:
-                    st.write(f"{st.session_state.weights_arbitrary[a]:.4f}")
-                        
-
-    else:
-        st.subheader("ETFs Sectoriales")
-
-        left_S, right_S = st.columns([2, 1], vertical_alignment='center')
-        with left_S:
-            st.write("XLC")
-            st.write("XLY")
-            st.write("XLP")
-            st.write("XLE")
-            st.write("XLF")
-            st.write("XLV")
-            st.write("XLI")
-            st.write("XLB")
-            st.write("XLRE")
-            st.write("XLK")
-            st.write("XLU")
-
-        with right_S:
-            st.write(0)
-            st.write(0)
-            st.write(0)
-            st.write(0)
-            st.write(0)
-            st.write(0)
-            st.write(0)
-            st.write(0)
-            st.write(0)
-            st.write(0)
-            st.write(0)
-
 # ===================== PORTAFOLIO ARBITRARIO =====================
 
 if tipo_portafolio == "Arbitrario":
@@ -263,7 +207,7 @@ if tipo_portafolio == "Arbitrario":
 
         w = np.array(list(st.session_state.weights_arbitrary.values()))
 
-        if not np.isclose(w.sum(), 1.0):
+        if not np.isclose(w.sum()*100, 1.0):
             st.warning(f"Los pesos suman {w.sum():.2f}. Se recomienda que la suma sea 1 (100%).")
         else:
 
