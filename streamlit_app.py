@@ -114,7 +114,7 @@ st.pyplot(fig)
 
 tipo_portafolio = st.selectbox(
     "Por favor, seleccione el tipo de Análisis del Portafolio que desea usar:",
-    ("Arbitrario", "Optimizado"),
+    ("Arbitrario", "Optimizado", "Black-Litterman"),
     index=None,
     placeholder="Seleccione método de análisis...",
 )
@@ -302,3 +302,124 @@ if tipo_portafolio == "Optimizado":
             st.markdown("### Métricas del portafolio optimizado")
             st.table(pd.Series(metrics_opt, name="Valor"))
             st.scatter_chart(df_pesos)
+
+
+# ===================== PORTAFOLIO ARBITRARIO =====================
+
+if tipo_portafolio == "Black-Litterman":
+    
+    if universo == "Regiones":
+        assets=["SPLG", "EWC", "IEUR", "EEM", "EWJ"]
+    else:
+        assets = ["XLC", "XLY", "XLP", "XLE", "XLF", "XLV", "XLI", "XLB", "XLRE", "XLK", "XLU"]
+    
+    n_assets=len(assets)
+
+    st.subheader("Análisis de Portafolio bajo Black Litterman")
+
+    st.markdown("""
+    En esta sección puedes definir **vistas absolutas o relativas**, junto con tu **nivel de confianza**.""")
+    
+    
+    if universo == "Regiones":
+        # Número de vistas
+        k = st.number_input(
+            "Número de vistas",
+            min_value=1,
+            max_value=10,
+            value=1,
+            step=1
+        )
+    else:
+        # Número de vistas
+        k = st.number_input(
+            "Número de vistas",
+            min_value=1,
+            max_value=4,
+            value=1,
+            step=1
+        )
+
+    P = np.zeros((k, n_assets))
+    Q = np.zeros(k)
+    Omega = np.zeros((k, k))
+
+    # Definición de vistas
+    st.markdown("## Definición de vistas")
+
+    for i in range(k):
+        st.markdown(f"### Vista {i + 1}")
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            view_type = st.selectbox(
+                "Tipo de vista",
+                ["Absoluta", "Relativa"],
+                key=f"type_{i}"
+            )
+
+        with col2:
+            asset_1 = st.selectbox(
+                "Activo principal",
+                assets,
+                key=f"a1_{i}"
+            )
+
+        with col3:
+            confidence = st.slider(
+                "Confianza en la vista (%)",
+                min_value=1,
+                max_value=100,
+                value=50,
+                key=f"conf_{i}"
+            )
+
+        if view_type == "Relativa":
+            asset_2 = st.selectbox(
+                "Activo de comparación",
+                assets,
+                key=f"a2_{i}"
+            )
+
+        expected_return = st.number_input(
+            "Retorno esperado de la vista (ej. 0.03 = 3%)",
+            value=0.02,
+            step=0.005,
+            format="%.4f",
+            key=f"q_{i}"
+        )
+
+        # Construcción de P y Q
+        idx_1 = assets.index(asset_1)
+        P[i, idx_1] = 1
+
+        if view_type == "Relativa":
+            idx_2 = assets.index(asset_2)
+            P[i, idx_2] = -1
+
+        Q[i] = expected_return
+
+        # Incertidumbre Ω
+        # (menor confianza → mayor varianza)
+        Omega[i, i] = (1 - confidence / 100) ** 2
+
+    # Resultados
+    st.markdown("## Matrices Resultantes")
+
+    df_P = pd.DataFrame(P, columns=assets)
+    df_Q = pd.DataFrame(Q, columns=["Q"])
+    df_Omega = pd.DataFrame(Omega)
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("### Matriz P")
+        st.dataframe(df_P)
+
+    with col2:
+        st.markdown("### Vector Q")
+        st.dataframe(df_Q)
+
+    with col3:
+        st.markdown("### Matriz Ω")
+        st.dataframe(df_Omega)
