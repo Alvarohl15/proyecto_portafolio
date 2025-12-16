@@ -68,23 +68,10 @@ st.table({
 })
 
 ###############Inicialización de pesos en 0##########
-st.session_state["W_SPLG"]=0
-st.session_state["W_EWC"]=0
-st.session_state["W_IEUR"]=0
-st.session_state["W_EEM"]=0
-st.session_state["W_EWJ"]=0
+if "weights_arbitrary" not in st.session_state:
+    st.session_state.weights_arbitrary = None
 
-st.session_state["W_XLC"]=0
-st.session_state["W_XLY"]=0
-st.session_state["W_XLP"]=0
-st.session_state["W_XLE"]=0
-st.session_state["W_XLF"]=0
-st.session_state["W_XLV"]=0
-st.session_state["W_XLI"]=0
-st.session_state["W_XLB"]=0
-st.session_state["W_XLRE"]=0
-st.session_state["W_XLK"]=0
-st.session_state["W_XLU"]=0
+
 
 # ===================== UNIVERSO =====================
 
@@ -156,7 +143,7 @@ with st.sidebar:
             st.write("EWJ")
 
         with right:
-            st.write({st.session_state["W_SPLG"]})
+            st.write(st.session_state["W_SPLG"])
             st.write({st.session_state["W_EWC"]})
             st.write({st.session_state["W_IEUR"]})
             st.write({st.session_state["W_EEM"]})
@@ -200,20 +187,32 @@ if tipo_portafolio == "Arbitrario":
     st.subheader("Análisis de Portafolio Arbitrario")
     st.markdown("Define el peso (en %) de cada ETF del portafolio.")
 
+    left_S, right_S  = st.columns(2)
+    temp_weights = {}
+
     # Pesos regionales
     if universo == "Regiones":
-        regionales = st.columns(5)
-        with regionales[0]:
-            W_SPLG=st.number_input("SPLG", 0.0, 100.0, 0.0, 0.1)
-        with regionales[1]:
-            W_EWC=st.number_input("EWC", 0.0, 100.0, 0.0, 0.1)
-        with regionales[2]:
-            W_IEUR=st.number_input("IEUR", 0.0, 100.0, 0.0, 0.1,)
-        with regionales[3]:
-            W_EEM=st.number_input("EEM", 0.0, 100.0, 0.0, 0.1)
-        with regionales[4]:
-            W_EWJ=st.number_input("EWJ", 0.0, 100.0, 0.0, 0.1)
+        n_assets=range(1,5)
+        with left_S:
+            st.write("SPLG")
+            st.write("EWC")
+            st.write("IEUR")
+            st.write("EEM")
+            st.write("EWJ")
 
+        with right_S:
+            for a in n_assets:
+                temp_weights[a] = st.slider(
+                    a,
+                    0.0,
+                    1.0,
+                    value=0.0 if st.session_state.weights_arbitrary is None
+                        else st.session_state.weights_arbitrary.get(a, 0.0),
+                    step=0.01,
+                    key=f"slider_{a}"
+                )
+
+        
     # Pesos sectoriales
     else:
         sectoriales_1 = st.columns(5)
@@ -254,52 +253,14 @@ if tipo_portafolio == "Arbitrario":
     if st.button("Calcular Análisis del Portafolio Arbitrario"):
         tickers_all = TICKERS_REGIONES + TICKERS_SECTORES
 
-        if universo == "Regiones":
-            pesos_pct = [
-                W_SPLG,
-                W_EWC,
-                W_IEUR,
-                W_EEM,
-                W_EWJ
-            ]
-        else:
-            pesos_pct = [
-                W_XLC,
-                W_XLY,
-                W_XLP,
-                W_XLE,
-                W_XLF,
-                W_XLV,
-                W_XLI,
-                W_XLB,
-                W_XLRE,
-                W_XLK,
-                W_XLU,
-            ]  
+        weights = {k: v / 100 for k, v in temp_weights.items()}
+        st.session_state.weights_arbitrary = weights
 
-        w = np.array(pesos_pct, dtype=float) / 100.0
+        w = np.array([st.session_state.weights_arbitrary[a] for a in n_assets])
 
         if not np.isclose(w.sum(), 1.0):
             st.warning(f"Los pesos suman {w.sum():.2f}. Se recomienda que la suma sea 1 (100%).")
         else:
-            if universo == "Regiones":
-                st.session_state["W_SPLG"]=W_SPLG
-                st.session_state["W_EWC"]=W_EWC
-                st.session_state["W_IEUR"]=W_IEUR
-                st.session_state["W_EEM"]=W_EEM
-                st.session_state["W_EWJ"]=W_EWJ
-            else:
-                st.session_state["W_XLC"]=W_XLC
-                st.session_state["W_XLY"]=W_XLY
-                st.session_state["W_XLP"]=W_XLP
-                st.session_state["W_XLE"]=W_XLE
-                st.session_state["W_XLF"]=W_XLF
-                st.session_state["W_XLV"]=W_XLV
-                st.session_state["W_XLI"]=W_XLI
-                st.session_state["W_XLB"]=W_XLB
-                st.session_state["W_XLRE"]=W_XLRE
-                st.session_state["W_XLK"]=W_XLK
-                st.session_state["W_XLU"]=W_XLU
 
             df_pesos=pd.DataFrame({"Ticker": tickers_universo, "Peso": w}).set_index("Ticker")
 
