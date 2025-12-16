@@ -67,7 +67,24 @@ st.table({
     ]
 })
 
+###############Inicialización de pesos en 0##########
+st.session_state["W_SPLG"]=0
+st.session_state["W_EWC"]=0
+st.session_state["W_IEUR"]=0
+st.session_state["W_EEM"]=0
+st.session_state["W_EWJ"]=0
 
+st.session_state["W_XLC"]=0
+st.session_state["W_XLY"]=0
+st.session_state["W_XLP"]=0
+st.session_state["W_XLE"]=0
+st.session_state["W_XLF"]=0
+st.session_state["W_XLV"]=0
+st.session_state["W_XLI"]=0
+st.session_state["W_XLB"]=0
+st.session_state["W_XLRE"]=0
+st.session_state["W_XLK"]=0
+st.session_state["W_XLU"]=0
 
 # ===================== UNIVERSO =====================
 
@@ -139,11 +156,11 @@ with st.sidebar:
             st.write("EWJ")
 
         with right:
-            st.write(st.session_state["W_SPLG"])
-            st.write(st.session_state["W_EWC"])
-            st.write(st.session_state["W_IEUR"])
-            st.write(st.session_state["W_EEM"])
-            st.write(st.session_state["W_EWJ"])
+            st.write({st.session_state["W_SPLG"]})
+            st.write({st.session_state["W_EWC"]})
+            st.write({st.session_state["W_IEUR"]})
+            st.write({st.session_state["W_EEM"]})
+            st.write({st.session_state["W_EWJ"]})
                 
 
     else:
@@ -187,45 +204,45 @@ if tipo_portafolio == "Arbitrario":
     if universo == "Regiones":
         regionales = st.columns(5)
         with regionales[0]:
-            st.number_input("SPLG", 0.0, 100.0, 0.0, 0.1, key="W_SPLG")
+            W_SPLG=st.number_input("SPLG", 0.0, 100.0, 0.0, 0.1)
         with regionales[1]:
-            st.number_input("EWC", 0.0, 100.0, 0.0, 0.1, key="W_EWC")
+            W_EWC=st.number_input("EWC", 0.0, 100.0, 0.0, 0.1)
         with regionales[2]:
-            st.number_input("IEUR", 0.0, 100.0, 0.0, 0.1, key="W_IEUR")
+            W_IEUR=st.number_input("IEUR", 0.0, 100.0, 0.0, 0.1,)
         with regionales[3]:
-            st.number_input("EEM", 0.0, 100.0, 0.0, 0.1, key="W_EEM")
+            W_EEM=st.number_input("EEM", 0.0, 100.0, 0.0, 0.1)
         with regionales[4]:
-            st.number_input("EWJ", 0.0, 100.0, 0.0, 0.1, key="W_EWJ")
+            W_EWJ=st.number_input("EWJ", 0.0, 100.0, 0.0, 0.1)
 
     # Pesos sectoriales
     else:
         sectoriales_1 = st.columns(5)
         with sectoriales_1[0]:
-            st.number_input("XLC", 0.0, 100.0, 0.0, 0.1, key="W_XLC")
+            W_XLC=st.number_input("XLC", 0.0, 100.0, 0.0, 0.1)
         with sectoriales_1[1]:
-            st.number_input("XLY", 0.0, 100.0, 0.0, 0.1, key="W_XLY")
+            W_XLY=st.number_input("XLY", 0.0, 100.0, 0.0, 0.1)
         with sectoriales_1[2]:
-            st.number_input("XLP", 0.0, 100.0, 0.0, 0.1, key="W_XLP")
+            W_XLP=st.number_input("XLP", 0.0, 100.0, 0.0, 0.1)
         with sectoriales_1[3]:
-            st.number_input("XLE", 0.0, 100.0, 0.0, 0.1, key="W_XLE")
+            W_XLE=st.number_input("XLE", 0.0, 100.0, 0.0, 0.1)
         with sectoriales_1[4]:
-            st.number_input("XLF", 0.0, 100.0, 0.0, 0.1, key="W_XLF")
+            W_XLF=st.number_input("XLF", 0.0, 100.0, 0.0, 0.1)
 
         sectoriales_2 = st.columns(5)
         with sectoriales_2[0]:
-            st.number_input("XLV", 0.0, 100.0, 0.0, 0.1, key="W_XLV")
+            W_XLV=st.number_input("XLV", 0.0, 100.0, 0.0, 0.1)
         with sectoriales_2[1]:
-            st.number_input("XLI", 0.0, 100.0, 0.0, 0.1, key="W_XLI")
+            W_XLI=st.number_input("XLI", 0.0, 100.0, 0.0, 0.1)
         with sectoriales_2[2]:
-            st.number_input("XLB", 0.0, 100.0, 0.0, 0.1, key="W_XLB")
+            W_XLB=st.number_input("XLB", 0.0, 100.0, 0.0, 0.1)
         with sectoriales_2[3]:
-            st.number_input("XLRE", 0.0, 100.0, 0.0, 0.1, key="W_XLRE")
+            W_XLRE=st.number_input("XLRE", 0.0, 100.0, 0.0, 0.1)
         with sectoriales_2[4]:
-            st.number_input("XLK", 0.0, 100.0, 0.0, 0.1, key="W_XLK")
+            W_XLK=st.number_input("XLK", 0.0, 100.0, 0.0, 0.1)
 
         regionales_3 = st.columns(5)
         with regionales_3[0]:
-            st.number_input("XLU", 0.0, 100.0, 0.0, 0.1, key="W_XLU")
+            W_XLU=st.number_input("XLU", 0.0, 100.0, 0.0, 0.1)
 
     rf_arbitrario = st.number_input(
         "Tasa libre de riesgo (rf, por periodo) para el análisis del portafolio arbitrario",
@@ -239,25 +256,25 @@ if tipo_portafolio == "Arbitrario":
 
         if universo == "Regiones":
             pesos_pct = [
-                st.session_state["W_SPLG"],
-                st.session_state["W_EWC"],
-                st.session_state["W_IEUR"],
-                st.session_state["W_EEM"],
-                st.session_state["W_EWJ"]
+                W_SPLG,
+                W_EWC,
+                W_IEUR,
+                W_EEM,
+                W_EWJ
             ]
         else:
             pesos_pct = [
-                st.session_state["W_XLC"],
-                st.session_state["W_XLY"],
-                st.session_state["W_XLP"],
-                st.session_state["W_XLE"],
-                st.session_state["W_XLF"],
-                st.session_state["W_XLV"],
-                st.session_state["W_XLI"],
-                st.session_state["W_XLB"],
-                st.session_state["W_XLRE"],
-                st.session_state["W_XLK"],
-                st.session_state["W_XLU"],
+                W_XLC,
+                W_XLY,
+                W_XLP,
+                W_XLE,
+                W_XLF,
+                W_XLV,
+                W_XLI,
+                W_XLB,
+                W_XLRE,
+                W_XLK,
+                W_XLU,
             ]  
 
         w = np.array(pesos_pct, dtype=float) / 100.0
@@ -265,6 +282,24 @@ if tipo_portafolio == "Arbitrario":
         if not np.isclose(w.sum(), 1.0):
             st.warning(f"Los pesos suman {w.sum():.2f}. Se recomienda que la suma sea 1 (100%).")
         else:
+            if universo == "Regiones":
+                st.session_state["W_SPLG"]=W_SPLG
+                st.session_state["W_EWC"]=W_EWC
+                st.session_state["W_IEUR"]=W_IEUR
+                st.session_state["W_EEM"]=W_EEM
+                st.session_state["W_EWJ"]=W_EWJ
+            else:
+                st.session_state["W_XLC"]=W_XLC
+                st.session_state["W_XLY"]=W_XLY
+                st.session_state["W_XLP"]=W_XLP
+                st.session_state["W_XLE"]=W_XLE
+                st.session_state["W_XLF"]=W_XLF
+                st.session_state["W_XLV"]=W_XLV
+                st.session_state["W_XLI"]=W_XLI
+                st.session_state["W_XLB"]=W_XLB
+                st.session_state["W_XLRE"]=W_XLRE
+                st.session_state["W_XLK"]=W_XLK
+                st.session_state["W_XLU"]=W_XLU
 
             df_pesos=pd.DataFrame({"Ticker": tickers_universo, "Peso": w}).set_index("Ticker")
 
