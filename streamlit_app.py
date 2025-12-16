@@ -71,6 +71,8 @@ st.table({
 if "weights_arbitrary" not in st.session_state:
     st.session_state.weights_arbitrary = None
 
+if "n_assets_arbitrary" not in st.session_state:
+    st.session_state.n_assets_arbitrary = 11
 
 
 # ===================== UNIVERSO =====================
@@ -84,8 +86,10 @@ universo = st.selectbox(
 )
 
 if universo == "Regiones":
+    st.session_state.n_assets_arbitrary=5
     tickers_universo = TICKERS_REGIONES
 else:
+    st.session_state.n_assets_arbitrary=11
     tickers_universo = TICKERS_SECTORES
 
 df_universo, mu_universo, Sigma_universo, corr = obtener_momentos_desde_csv(tickers_universo)
@@ -194,7 +198,6 @@ if tipo_portafolio == "Arbitrario":
 
     # Pesos regionales
     if universo == "Regiones":
-        n_assets=range(1,5)
         with left_S:
             st.write("SPLG")
             st.write("EWC")
@@ -203,8 +206,16 @@ if tipo_portafolio == "Arbitrario":
             st.write("EWJ")
 
         with right_S:
-            for a in n_assets:
-                temp_weights[a] = st.slider(a, 0.0, 1.0, value=0.0 if st.session_state.weights_arbitrary is None else st.session_state.weights_arbitrary.get(a, 0.0), step=0.01, key=f"slider_{a}")
+            for i in range(1, st.session_state.n_assets_arbitrary + 1):
+                temp_weights[f"Activo {i}"] = st.slider(
+                    f"Peso Activo {i}",
+                    min_value=0.0,
+                    max_value=1.0,
+                    value=0.0 if st.session_state.weights_arbitrary is None
+                        else st.session_state.weights_arbitrary.get(f"Activo {i}", 0.0),
+                    step=0.01,
+                    key=f"slider_activo_{i}"
+                )
 
         
     # Pesos sectoriales
