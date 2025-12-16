@@ -208,7 +208,7 @@ if tipo_portafolio == "Arbitrario":
         with right_S:
             for i in range(1, st.session_state.n_assets_arbitrary + 1):
                 temp_weights[f"Activo {i}"] = st.slider(
-                    f"Peso Activo {i}",
+                    f"Peso Activo {"ETFs Regionales"[i]}",
                     min_value=0.0,
                     max_value=1.0,
                     value=0.0 if st.session_state.weights_arbitrary is None
@@ -261,7 +261,7 @@ if tipo_portafolio == "Arbitrario":
         weights = {k: v / 100 for k, v in temp_weights.items()}
         st.session_state.weights_arbitrary = weights
 
-        w = np.array([st.session_state.weights_arbitrary[a] for a in n_assets])
+        w = np.array(list(st.session_state.weights_arbitrary.values()))
 
         if not np.isclose(w.sum(), 1.0):
             st.warning(f"Los pesos suman {w.sum():.2f}. Se recomienda que la suma sea 1 (100%).")
