@@ -230,7 +230,6 @@ def optimize_BL_target(mu, Sigma, r_target,P, Q, Omega, short=False):
         {"type": "eq", "fun": lambda w: np.sum(w) - 1}, # Suma de pesos = 1
         {"type": "eq", "fun": lambda w: np.dot(w, mu_bl) - r_target}, #rendimiento esperado
     ]
-
     bounds = tuple((0,1) for _ in range(n)) # Pesos entre 0 y 1 (no short)
     
     res = op.minimize(obj, w_mkt, method="SLSQP", bounds=bounds, constraints=cons)

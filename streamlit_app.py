@@ -16,7 +16,6 @@ from optimization import (
     optimize_max_sharpe,
     optimize_markowitz_target,
     optimize_BL_target,
-
 )
 
 # ===================== CONFIGURACIÓN DE LA APP =====================
@@ -444,7 +443,7 @@ if tipo_portafolio == "Black-Litterman":
             st.dataframe(
                 df_pesos
             )
-            
+
             st.markdown("### Métricas del portafolio bajo Black Litterman")
             st.table(pd.Series(metrics_opt, name="Valor"))
             st.scatter_chart(df_pesos)
