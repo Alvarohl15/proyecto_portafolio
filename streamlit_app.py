@@ -180,9 +180,9 @@ if tipo_portafolio == "Arbitrario":
         weights = {k: v / 100 for k, v in temp_weights.items()}
         st.session_state.weights_arbitrary = weights
 
-        w = np.array(list(st.session_state.weights_arbitrary.values()))
+        w = np.array(list(st.session_state.weights_arbitrary.values()))*100
 
-        if not np.isclose(w.sum()*100, 1.0):
+        if not np.isclose(w.sum(), 1.0):
             st.warning(f"Los pesos suman {w.sum():.2f}. Se recomienda que la suma sea 1 (100%).")
         else:
 
