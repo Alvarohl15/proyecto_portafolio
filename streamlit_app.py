@@ -434,6 +434,11 @@ if tipo_portafolio == "Black-Litterman":
             mu_vals = mu_universo.values*252 #anualizado
             Sigma_vals = Sigma_universo.values*252 #anualizado
             
+            st.markdown("Sigma:", Sigma_vals.shape)
+            st.markdown("P:", P.shape)
+            st.markdown("Q:", Q.shape)
+            st.markdown("Omega:", Omega.shape)
+
             w_opt, res = optimize_BL_target(mu_vals, Sigma_vals, r_target_bl, df_P, df_Q, df_Omega, short=False)
             metrics_opt = compute_portfolio_metrics(returns_universo, w_opt, rf=rf)
             
