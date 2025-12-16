@@ -208,6 +208,9 @@ def optimize_BL_target(mu, Sigma, r_target,P, Q, Omega, short=False):
              w' mu = r_target
              (y w >= 0 si short = False)
     """
+    
+    mu_bl, Sigma, n = _check_inputs(mu_bl, Sigma)
+    
     # Parámetros del modelo
     delta = 2.5  # aversión al riesgo
     tau = 0.05   # incertidumbre del mercado
@@ -221,7 +224,6 @@ def optimize_BL_target(mu, Sigma, r_target,P, Q, Omega, short=False):
     middle = np.linalg.inv(np.linalg.inv(tau * Sigma) + P.T @ np.linalg.inv(Omega) @ P)
     mu_bl = middle @ (np.linalg.inv(tau * Sigma) @ pi + P.T @ np.linalg.inv(Omega) @ Q)
 
-    mu_bl, Sigma, n = _check_inputs(mu_bl, Sigma)
     
     def obj(w):
         return w @ Sigma @ w.T
