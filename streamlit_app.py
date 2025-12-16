@@ -193,6 +193,9 @@ if tipo_portafolio == "Arbitrario":
             v=pd.Series(metrics, name="Valor")
             v=v.round(6)
 
+            st.markdown("## Distribución del Portafolio")
+            st.scatter_chart(df_pesos)
+
             st.markdown("## 📊 Métricas del Portafolio Arbitrario")
             col1, col2, col3 = st.columns(3)
 
@@ -218,7 +221,6 @@ if tipo_portafolio == "Arbitrario":
             col1.metric("CVaR 95%", v["CVaR 95%"])
             col2.metric("Beta vs Mercado", v["Beta vs mercado"])
 
-            st.scatter_chart(df_pesos)
 
 
 
