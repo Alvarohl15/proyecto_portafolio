@@ -249,10 +249,13 @@ if tipo_portafolio == "Arbitrario":
             st.warning(f"Los pesos suman {w.sum():.2f}. Se recomienda que la suma sea 1 (100%).")
         else:
 
+            df_pesos=pd.DataFrame({"Ticker": tickers_universo, "Peso": w}).set_index("Ticker")
+
             metrics = compute_portfolio_metrics(returns_universo, w, rf=rf_arbitrario)
 
             st.subheader("Métricas del portafolio arbitrario")
             st.table(pd.Series(metrics, name="Valor"))
+            st.scatter_chart(df_pesos)
 
 # ===================== PORTAFOLIO OPTIMIZADO =====================
 
