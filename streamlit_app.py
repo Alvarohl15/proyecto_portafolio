@@ -124,37 +124,40 @@ tipo_portafolio = st.selectbox(
 
 with st.sidebar:
     st.header("Definición de Pesos de los Activos")
-    st.subheader("ETFs Regionales")
+    
+    if universo == "Regiones":
+        st.subheader("ETFs Regionales")
 
-    left, right = st.columns([2, 1], vertical_alignment='center')
-    with left:
-        st.write("SPLG")
-        st.write("EWC")
-        st.write("IEUR")
-        st.write("EEM")
-        st.write("EWJ")
+        left, right = st.columns([2, 1], vertical_alignment='center')
+        with left:
+            st.write("SPLG")
+            st.write("EWC")
+            st.write("IEUR")
+            st.write("EEM")
+            st.write("EWJ")
 
-    with right:
-        st.write("Pesos definidos en la sección de análisis.")
+        with right:
+            st.write("Pesos definidos en la sección de análisis.")
 
-    st.subheader("ETFs Sectoriales")
+    else:
+        st.subheader("ETFs Sectoriales")
 
-    left_S, right_S = st.columns([2, 1], vertical_alignment='center')
-    with left_S:
-        st.write("XLC")
-        st.write("XLY")
-        st.write("XLP")
-        st.write("XLE")
-        st.write("XLF")
-        st.write("XLV")
-        st.write("XLI")
-        st.write("XLB")
-        st.write("XLRE")
-        st.write("XLK")
-        st.write("XLU")
+        left_S, right_S = st.columns([2, 1], vertical_alignment='center')
+        with left_S:
+            st.write("XLC")
+            st.write("XLY")
+            st.write("XLP")
+            st.write("XLE")
+            st.write("XLF")
+            st.write("XLV")
+            st.write("XLI")
+            st.write("XLB")
+            st.write("XLRE")
+            st.write("XLK")
+            st.write("XLU")
 
-    with right_S:
-        st.write("Pesos definidos en la sección de análisis.")
+        with right_S:
+            st.write("Pesos definidos en la sección de análisis.")
 
 # ===================== PORTAFOLIO ARBITRARIO =====================
 
@@ -217,24 +220,28 @@ if tipo_portafolio == "Arbitrario":
     if st.button("Calcular Análisis del Portafolio Arbitrario"):
         tickers_all = TICKERS_REGIONES + TICKERS_SECTORES
 
-        pesos_pct = [
-            st.session_state["W_SPLG"],
-            st.session_state["W_EWC"],
-            st.session_state["W_IEUR"],
-            st.session_state["W_EEM"],
-            st.session_state["W_EWJ"],
-            st.session_state["W_XLC"],
-            st.session_state["W_XLY"],
-            st.session_state["W_XLP"],
-            st.session_state["W_XLE"],
-            st.session_state["W_XLF"],
-            st.session_state["W_XLV"],
-            st.session_state["W_XLI"],
-            st.session_state["W_XLB"],
-            st.session_state["W_XLRE"],
-            st.session_state["W_XLK"],
-            st.session_state["W_XLU"],
-        ]
+        if universo == "Regiones":
+            pesos_pct = [
+                st.session_state["W_SPLG"],
+                st.session_state["W_EWC"],
+                st.session_state["W_IEUR"],
+                st.session_state["W_EEM"],
+                st.session_state["W_EWJ"]
+            ]
+        else:
+            pesos_pct = [
+                st.session_state["W_XLC"],
+                st.session_state["W_XLY"],
+                st.session_state["W_XLP"],
+                st.session_state["W_XLE"],
+                st.session_state["W_XLF"],
+                st.session_state["W_XLV"],
+                st.session_state["W_XLI"],
+                st.session_state["W_XLB"],
+                st.session_state["W_XLRE"],
+                st.session_state["W_XLK"],
+                st.session_state["W_XLU"],
+            ]  
 
         w = np.array(pesos_pct, dtype=float) / 100.0
 
