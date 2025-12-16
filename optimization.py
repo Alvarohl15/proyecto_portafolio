@@ -218,7 +218,7 @@ def optimize_BL_target(mu, Sigma, r_target,P, Q, Omega, short=False):
     w_mkt = np.ones(n) / n # Condición inicial: pesos iguales
 
     # Retornos implícitos de equilibrio (pi)
-    pi = delta * Sigma @ mu
+    pi = delta * Sigma @ w_mkt
     
     # Retornos esperados Black-Litterman
     middle = np.linalg.inv(np.linalg.inv(tau * Sigma) + P.T @ np.linalg.inv(Omega) @ P)
