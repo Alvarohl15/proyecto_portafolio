@@ -256,7 +256,6 @@ if tipo_portafolio == "Arbitrario":
             st.subheader("Métricas del portafolio arbitrario")
             v=pd.Series(metrics, name="Valor")
             v=v.round(6)
-            st.table(v)
 
             st.markdown("## 📊 Métricas del Portafolio")
             col1, col2, col3 = st.columns(3)
@@ -338,8 +337,35 @@ if tipo_portafolio == "Optimizado":
                 df_pesos
             )
 
-            st.markdown("### Métricas del portafolio optimizado")
-            st.table(pd.Series(metrics_opt, name="Valor"))
+            st.subheader("Métricas del portafolio optimizado")
+            v=pd.Series(metrics_opt, name="Valor")
+            v=v.round(6)
+
+            st.markdown("## 📊 Métricas del Portafolio")
+            col1, col2, col3 = st.columns(3)
+
+            col1.metric("Retorno Medio", v["Media"])
+            col2.metric("Volatilidad", v["Volatilidad"])
+            col3.metric("Sharpe Ratio", v["Sharpe"])
+
+            st.markdown("### ⚙️ Riesgo Ajustado")
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Sortino Ratio", v["Sortino"])
+            col2.metric("α (Retorno – rf)", v["α (retorno - rf)"])
+            col3.metric("Max Drawdown", v["Max Drawdown"])
+
+            st.markdown("### 📐 Distribución y Riesgo Extremo")
+
+            col1, col2, col3 = st.columns(3)
+
+            col1.metric("Skewness", v["Skewness"])
+            col2.metric("Kurtosis", v["Kurtosis"])
+            col3.metric("VaR 95%", v["VaR 95%"])
+
+            col1, col2, col3 = st.columns(3)
+            col1.metric("CVaR 95%", v["CVaR 95%"])
+            col2.metric("Beta vs Mercado", v["Beta vs mercado"])
+
             st.scatter_chart(df_pesos)
 
 
